@@ -1,0 +1,21 @@
+{
+  "name": "jntu-exam-seating",
+  "version": "1.0.0",
+  "description": "Automatic Exam Seating Management System",
+  "main": "backend/server.js",
+  "scripts": {
+    "start": "node backend/server.js",
+    "dev": "node backend/server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "body-parser": "^1.20.3",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "mysql2": "^3.11.3",
+    "sqlite3": "^5.1.7"
+  }
+}

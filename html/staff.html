@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Dashboard - JNTU Auto Seating Allotment</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
+    <style>
+        /* Progress Indicators */
+        .step-indicators {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .step-indicator {
+            position: relative;
+            text-align: center;
+            color: var(--text-muted);
+            font-weight: 600;
+            transition: all 0.4s;
+        }
+
+        .step-indicator::before {
+            content: '';
+            display: block;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--border);
+            margin: 0 auto 0.5rem;
+            transition: background 0.4s, transform 0.4s;
+            line-height: 30px;
+            color: white;
+        }
+
+        .step-indicator.active {
+            color: var(--primary);
+        }
+
+        .step-indicator.active::before {
+            background: var(--primary);
+            transform: scale(1.2);
+            box-shadow: 0 0 15px rgba(30, 58, 138, 0.4);
+        }
+
+        .step-indicator.completed::before {
+            background: var(--success);
+        }
+
+        .branch-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .branch-card {
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .branch-card:hover {
+            border-color: var(--primary);
+        }
+
+        .branch-card.selected {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 10px 20px rgba(30, 58, 138, 0.3);
+        }
+
+        .branch-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            font-weight: 800;
+        }
+
+        .batch-section {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .batch-header {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: var(--text-main);
+        }
+
+        .year-btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        /* Outline Buttons */
+        .year-tag {
+            padding: 0.6rem 1.25rem;
+            border-radius: 8px;
+            background: transparent;
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid rgba(30, 58, 138, 0.4);
+        }
+
+        .year-tag:hover {
+            background: rgba(30, 58, 138, 0.05);
+        }
+
+        .year-tag.selected {
+            background: transparent;
+            color: var(--primary);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 1px var(--primary);
+        }
+
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+        }
+
+        /* Floating Summary Box */
+        .summary-box {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .summary-row:last-child {
+            border-bottom: none;
+        }
+
+        .summary-label {
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .summary-value {
+            font-weight: 700;
+            color: var(--primary);
+            text-align: right;
+        }
+    </style>
+</head>
+
+<body class="dashboard-layout">
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            JNTU Seating
+        </div>
+        <nav>
+            <a href="#" class="nav-link active" id="navSchedule">Schedule Exam</a>
+            <a href="#" class="nav-link" id="navMyAllocations">My Submitted Allocations</a>
+        </nav>
+
+    </aside>
+
+    <main class="main-content">
+        <header class="header">
+            <div>
+                <h1 style="font-size: 1.75rem; font-weight: 800; letter-spacing: -0.5px;" id="headerUserRole">Staff
+                    Dashboard</h1>
+                <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 0.25rem;">Multi-step smooth exam
+                    scheduling</p>
+            </div>
+            <button id="logoutBtn" class="btn btn-secondary" style="color: #EF4444; border-color: #EF4444; padding: 0.5rem 1.25rem; font-size: 0.9rem;">
+                <i class="fas fa-sign-out-alt me-2"></i>Logout
+            </button>
+        </header>
+
+        <!-- History Section (Hidden by default) -->
+        <section id="myAllocationsSection" class="animate-fade-in" style="display: none;">
+            <div class="card float-hover">
+                <h2 class="card-title">My Pending & Processed Allocations</h2>
+                <div style="overflow-x: auto;">
+                    <table id="myAllocationsTable">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Exam</th>
+                                <th>Target Batch</th>
+                                <th>Rooms & Rolls</th>
+                                <th>Faculty Matrix</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Schedule Section -->
+        <section id="scheduleSection" class="animate-fade-in">
+
+            <div class="step-indicators">
+                <div class="step-indicator active" id="ind-1" data-step="1">1. Batch Selection</div>
+                <div class="step-indicator" id="ind-2" data-step="2">2. Rooms</div>
+                <div class="step-indicator" id="ind-3" data-step="3">3. Faculty</div>
+                <div class="step-indicator" id="ind-4" data-step="4">4. Preview</div>
+            </div>
+
+            <div class="step-container">
+                <!-- STEP 1: Exam, Branch, Year -->
+                <div class="step active float-hover" id="step1">
+                    <div class="card">
+                        <h2 class="card-title" style="margin-bottom: 0.5rem;">Step 1: Exam Type & Batches</h2>
+                        <p style="color: var(--text-muted); margin-bottom: 2rem;">Select the examination type and target
+                            student batches. You may select multiple years per branch.</p>
+
+                        <div class="form-group flex gap-4"
+                            style="margin-bottom: 2.5rem; border-bottom: 1px solid var(--border); padding-bottom: 2rem;">
+                            <div style="flex: 1;">
+                                <h3 class="card-title"
+                                    style="font-size: 1.1rem; border: none; margin-bottom: 0.5rem; padding: 0;">1.
+                                    Select Exam Date & Time</h3>
+                                <div class="flex gap-2">
+                                    <input type="date" id="examDate"
+                                        style="flex: 2; padding: 0.75rem; border: 1px solid var(--border); border-radius: 8px; font-family: inherit;">
+                                    <input type="time" id="examTime"
+                                        style="flex: 1; padding: 0.75rem; border: 1px solid var(--border); border-radius: 8px; font-family: inherit;">
+                                </div>
+                            </div>
+                            <div style="flex: 2;">
+                                <h3 class="card-title"
+                                    style="font-size: 1.1rem; border: none; margin-bottom: 0.5rem; padding: 0;">2.
+                                    Select Examination Type</h3>
+                                <div class="year-tags" id="examTypeContainer"
+                                    style="justify-content: flex-start; margin-bottom: 1rem;">
+                                    <!-- Options generated by JS -->
+                                    <div class="year-tag" data-val="Mid 1 Examination" style="border-radius: 8px;">Mid 1
+                                        Examination</div>
+                                    <div class="year-tag" data-val="Mid 2 Examination" style="border-radius: 8px;">Mid 2
+                                        Examination</div>
+                                    <div class="year-tag" data-val="End Semester Examination"
+                                        style="border-radius: 8px;">End Semester Examination</div>
+                                </div>
+                                <div id="supplyFileContainer"
+                                    style="display: none; padding: 1rem; background: rgba(30, 58, 138, 0.05); border-radius: 8px; border: 1px dashed var(--primary); transition: all 0.3s;">
+                                    <h4
+                                        style="font-size: 0.95rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-main);">
+                                        Upload Supply Students List (Excel)</h4>
+                                    <input type="file" id="supplyFileInput" accept=".xlsx, .xls"
+                                        style="font-size: 0.9rem; width: 100%;" />
+                                    <div id="supplyFileStatus"
+                                        style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.5rem;">For
+                                        end-semester supply students. Optional.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-between items-end"
+                            style="margin-bottom: 1.5rem; border-bottom: 1px solid var(--border); padding-bottom: 1rem;">
+                            <h3 class="card-title" style="font-size: 1.1rem; border: none; margin: 0; padding: 0;">3.
+                                Batch Selection</h3>
+                            <div style="font-weight: 500; font-size: 1rem;">
+                                Total Selected Students: <span id="selectedStudentCount"
+                                    style="font-weight: 800; color: var(--primary); font-size: 1.25rem;">0</span>
+                            </div>
+                        </div>
+
+                        <div id="batchSelectionContainer" style="margin-bottom: 2.5rem;">
+                            <!-- Dynamically generated branch headers and year buttons go here -->
+                        </div>
+
+                        <div class="navigation-buttons">
+                            <div></div>
+                            <button class="btn btn-primary" onclick="staffScript.nextStep(2)">Continue 👉</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 2: Room Allocation -->
+                <div class="step float-hover" id="step2">
+                    <div class="card">
+                        <h2 class="card-title">Step 2: Allocate Rooms</h2>
+                        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Select the physical rooms required.
+                            You must select enough rooms to seat all targeted students.</p>
+
+                        <div class="flex justify-between items-center"
+                            style="margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+                            <div style="font-weight: 500; font-size: 1.1rem;">
+                                Selected Capacity: <span id="selectedRoomCapacity"
+                                    style="font-weight: 700; color: var(--primary);">0</span> / <span
+                                    id="requiredRoomCapacity" style="color: var(--text-muted);">0</span> required
+                            </div>
+                            <div class="flex gap-4 items-center" style="flex-wrap: wrap;">
+                                <button class="btn btn-secondary"
+                                    style="padding: 0.5rem 1rem; border-color: var(--primary); color: var(--primary);"
+                                    onclick="staffScript.autoSelectRooms()">✨ Auto Select Rooms</button>
+                                <div class="input-wrapper" style="width: 300px; max-width: 100%; margin: 0;">
+                                    <input type="text" id="roomSearchInput" class="form-control"
+                                        placeholder="Search rooms (e.g. Lab 1)..."
+                                        oninput="staffScript.renderRoomFields(this.value)">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="roomSelectionGrid" class="branch-grid"
+                            style="margin-bottom: 2rem; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));">
+                            <!-- Populated dynamically by JS -->
+                        </div>
+
+                        <div id="roomPreviewSection"
+                            style="margin-bottom: 2rem; padding: 1.5rem; background: rgba(30, 58, 138, 0.03); border-radius: 12px; border: 1px solid var(--border); display: none;">
+                            <h3
+                                style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; color: var(--primary);">
+                                Live Allocation Preview</h3>
+                            <div id="roomPreviewContent" style="display: flex; flex-direction: column; gap: 0.75rem;">
+                            </div>
+                        </div>
+
+                        <div class="navigation-buttons">
+                            <button class="btn btn-secondary" onclick="staffScript.prevStep(1)">👈 Back to
+                                Batch</button>
+                            <button class="btn btn-primary" onclick="staffScript.nextStep(3)">Continue to Faculty
+                                👉</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 3: Faculty Allocation -->
+                <div class="step float-hover" id="step3">
+                    <div class="card">
+                        <h2 class="card-title">Step 3: Assign Invigilators</h2>
+                        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Select monitoring faculty from the
+                            list below. (Requirement: 1 staff per 30 students).</p>
+
+                        <div class="flex justify-between items-center"
+                            style="margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+                            <div style="font-weight: 500; font-size: 1.1rem;">
+                                Selected Faculty: <span id="selectedFacultyCount"
+                                    style="font-weight: 700; color: var(--primary);">0</span> / <span
+                                    id="requiredFacultyCount" style="color: var(--text-muted);">0</span> required
+                            </div>
+                            <div class="flex gap-4 items-center" style="flex-wrap: wrap;">
+                                <button class="btn btn-secondary"
+                                    style="padding: 0.5rem 1rem; border-color: var(--primary); color: var(--primary);"
+                                    onclick="staffScript.autoSelectFaculty()">✨ Auto Select Faculty</button>
+                                <div class="input-wrapper" style="width: 300px; max-width: 100%; margin: 0;">
+                                    <input type="text" id="facultySearchInput" class="form-control"
+                                        placeholder="Search faculty by name/dept..."
+                                        oninput="staffScript.renderFacultyFields(this.value)">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="facultySelectionGrid" class="branch-grid"
+                            style="margin-bottom: 2.5rem; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));">
+                            <!-- Populated dynamically by JS -->
+                        </div>
+
+                        <div class="navigation-buttons">
+                            <button class="btn btn-secondary" onclick="staffScript.prevStep(2)">👈 Back to
+                                Rooms</button>
+                            <button class="btn btn-primary" onclick="staffScript.nextStep(4)">Continue to Preview
+                                👉</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 4: Preview -->
+                <div class="step animate-float-up" id="step4">
+                    <div class="summary-box">
+                        <h2 class="card-title" style="text-align: center; font-size: 1.5rem;">Final Review</h2>
+                        <p style="text-align: center; color: var(--text-muted); margin-bottom: 2.5rem;">Please review
+                            the allocation matrix carefully before transmitting to the Principal.</p>
+
+                        <div id="previewSummaryContainer">
+                        </div>
+
+                        <div class="flex gap-4" style="margin-top: 3rem;">
+                            <button class="btn btn-secondary" style="flex: 1;" onclick="staffScript.prevStep(3)">👈 Make
+                                Changes</button>
+                            <button class="btn btn-primary" style="flex: 2; font-size: 1.1rem;"
+                                onclick="staffScript.submitAllocation()">Transmit Request to Principal 🚀</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <script src="/js/db.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/export.js"></script>
+    <script src="/js/staff.js"></script>
+</body>
+
+</html>

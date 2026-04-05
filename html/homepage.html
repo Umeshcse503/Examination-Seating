@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JNTU College Academic Project</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css?v=2">
+    <style>
+        :root {
+            --primary-blue: #1e40af;
+            --secondary-blue: #3b82f6;
+            --bg-glass: rgba(255, 255, 255, 0.85);
+            --border-glass: rgba(255, 255, 255, 0.3);
+            --shadow-premium: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            --shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .dev-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+            border: 1px solid #ddd;
+            height: 100%;
+        }
+
+        .dev-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .dev-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 1rem;
+            border: 3px solid var(--primary-blue);
+        }
+
+        .dev-info h5 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+            color: #333;
+        }
+
+        .dev-info p {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Simplified Modal */
+        .modal-simple {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 1050;
+            justify-content: center;
+            align-items: center;
+            padding: 1.5rem;
+        }
+
+        .modal-simple.active {
+            display: flex;
+        }
+
+        .modal-simple-content {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            max-width: 450px;
+            width: 100%;
+            position: relative;
+            animation: modalIn 0.3s ease-out;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .dev-detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .dev-detail-item:last-child {
+            border-bottom: none;
+        }
+
+        .dev-detail-label {
+            color: #64748b;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .dev-detail-value {
+            color: var(--primary-blue);
+            font-weight: 600;
+        }
+
+        .btn-close-premium {
+            position: absolute;
+            top: 1.25rem;
+            right: 1.25rem;
+            background: #f1f5f9;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            transition: all 0.2s;
+        }
+
+        .btn-close-premium:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+
+        .branding-section {
+            text-align: center;
+            padding: 80px 0;
+            background: white;
+        }
+
+        .college-logo {
+            margin: 0 auto;
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg sticky-top navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#" style="color: var(--primary-blue);">JNTU-UCEW</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link fw-semibold px-3" href="#home"
+                            style="color: var(--primary-blue) !important;">Home</a></li>
+                    <li class="nav-item"><a class="nav-link fw-semibold px-3" href="https://ucew.jntuh.ac.in/"
+                            target="_blank" style="color: var(--primary-blue) !important;">College Website</a></li>
+                    <li class="nav-item"><a class="nav-link fw-semibold px-3" href="#overview"
+                            style="color: var(--primary-blue) !important;">Project Overview</a></li>
+                    <li class="nav-item"><a class="nav-link px-3 py-2 ms-2 m-1 rounded-2" href="https://jntuh.ac.in/"
+                            target="_blank"
+                            style="border: 1.5px solid var(--primary-blue); color: var(--primary-blue) !important; font-weight: 500;">Official
+                            University Website</a></li>
+                    <li class="nav-item"><a class="nav-link fw-semibold px-3 ms-2" href="#feedback"
+                            style="color: var(--primary-blue) !important;">Feedback</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Branding Section -->
+    <header id="home" class="branding-section">
+        <div class="container text-center">
+            <div class="mb-4 animate-slide-up">
+                <img src="/images/logo.jpg" alt="JNTU Logo" class="college-logo"
+                    style="width: 140px; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.1));">
+            </div>
+            <h1 class="college-name display-5 mb-0 animate-fade-in delay-100">JAWAHARLAL NEHRU TECHNOLOGICAL UNIVERSITY
+            </h1>
+            <h2 class="h3 mb-4 animate-fade-in delay-200" style="color: var(--secondary-blue); font-weight: 600;">
+                UNIVERSITY COLLEGE OF ENGINEERING</h2>
+
+            <div class="mt-5 mb-5 p-4 rounded-4 animate-slide-up delay-300"
+                style="background: rgba(255,255,255,0.8); backdrop-filter: blur(5px); box-shadow: 0 15px 35px rgba(0,0,0,0.05); max-width: 900px; margin: 0 auto; text-align: center;">
+                <h3 class="fw-bold mb-3" style="color: var(--primary-blue); letter-spacing: -0.5px;">Automatic
+                    Examination Seating Arrangement and Management System</h3>
+                <p class="lead text-muted mx-auto" style="font-size: 1.1rem; line-height: 1.8;">
+                    Our professional seating allotment system automatically generates optimized arrangements for
+                    examinations,
+                    drastically reducing manual effort. It intelligently avoids student conflicts, manages hall
+                    capacity,
+                    and provides administrators with a seamless, organized management experience.
+                </p>
+            </div>
+
+            <div class="mt-2 mb-3 pt-2 animate-slide-up delay-300">
+                <a href="/html/index.html"
+                    class="btn btn-primary px-5 py-3 rounded-pill fw-bold shadow-lg login-btn-anim"
+                    style="font-size: 1.2rem; background-color: #1e3a8a; border: none; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;">Login
+                    to Portal</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Project Overview Section -->
+    <section id="overview" class="py-3" style="background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);">
+        <div class="container text-center mt-2">
+            <h2 class="section-title fw-bold"
+                style="color: var(--primary-blue); display: inline-block; position: relative;">
+                Project Features
+                <span
+                    style="content:''; display:block; width:40px; height:3px; background:#3b82f6; margin: 8px auto 0;"></span>
+            </h2>
+            <p class="text-muted mt-2 mb-3" style="font-size: 0.95rem;">Designed for efficiency, accuracy, and ease of
+                use.</p>
+
+            <div class="row g-4 mt-2">
+                <div class="col-md-4">
+                    <div class="feature-card reveal delay-100">
+                        <div class="text-center">
+                            <i class="fas fa-users-cog"></i>
+                            <h4 class="fw-bold">Automated Seating Allocation</h4>
+                        </div>
+                        <p class="text-muted text-center mt-3">Automatically assigns students to exam halls based on
+                            availability and intelligent scheduling rules.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card reveal delay-200">
+                        <div class="text-center">
+                            <i class="fas fa-calendar-check"></i>
+                            <h4 class="fw-bold">Efficient Exam Scheduling</h4>
+                        </div>
+                        <p class="text-muted text-center mt-3">Helps administrators manage exam schedules and seating
+                            plans quickly without manual errors.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card reveal delay-300">
+                        <div class="text-center">
+                            <i class="fas fa-folder-tree"></i>
+                            <h4 class="fw-bold">Organized Student Management</h4>
+                        </div>
+                        <p class="text-muted text-center mt-3">Maintains student data, exam details, and seating
+                            allocation in a structured and accessible way.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Feedback Section -->
+    <section id="feedback" class="feedback-section" style="background: #e6f0fa; padding: 5rem 0;">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-6">
+                    <div class="feedback-form reveal">
+                        <h2 class="text-center mb-4" style="color: var(--primary-blue);">Submit Feedback</h2>
+                        <form id="feedbackForm">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Student Name</label>
+                                <input type="text" class="form-control" required placeholder="Enter your name">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Roll Number</label>
+                                <input type="text" class="form-control" required placeholder="e.g. 25XW5A0503">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Email</label>
+                                <input type="email" class="form-control" required placeholder="name@jntu.edu">
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">Message / Suggestions</label>
+                                <textarea class="form-control" rows="4" required
+                                    placeholder="Your suggestions..."></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-jntu w-100 py-3">Submit Feedback</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Developers Section (Phase 4 Cards) -->
+    <section class="py-5" id="developers" style="background: linear-gradient(120deg, #e0e7ff 0%, #c7d2fe 100%);">
+        <div class="container">
+            <h2 class="section-title text-center reveal" style="font-weight: 800; color: #0f172a;">Developers</h2>
+            <p class="text-center text-muted mb-5 reveal">The creative minds behind the Automatic Seating Arrangement
+                System.</p>
+            <div class="row g-4 mt-2">
+                <div class="col-md-3">
+                    <div class="dev-card" onclick="showDevDetails('umesh')">
+                        <img src="/images/umesh.jpeg" alt="Umesh" class="dev-img">
+                        <div class="dev-info">
+                            <h5>UMESH CHANDRA</h5>
+                            <p>CSE 2nd Year</p>
+                            <span class="badge bg-light text-primary border">25XW5A0503</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="dev-card" onclick="showDevDetails('sai')">
+                        <img src="/images/saikrishna.jpeg" alt="Sai Krishna" class="dev-img">
+                        <div class="dev-info">
+                            <h5>SAI KRISHNA</h5>
+                            <p>CSE 2nd Year</p>
+                            <span class="badge bg-light text-primary border">24XW1A0555</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="dev-card" onclick="showDevDetails('gopi')">
+                        <img src="/images/gopi.jpeg" alt="Gopi" class="dev-img">
+                        <div class="dev-info">
+                            <h5>GOPI KRISHNA</h5>
+                            <p>CSE 2nd Year</p>
+                            <span class="badge bg-light text-primary border">24XW5A0559</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="dev-card" onclick="showDevDetails('yaseen')">
+                        <img src="/images/yaseen.jpeg" alt="Yaseen" class="dev-img">
+                        <div class="dev-info">
+                            <h5>MOHAMMED YASEEN</h5>
+                            <p>CSE 2nd Year</p>
+                            <span class="badge bg-light text-primary border">24XW5A0504</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <h4 class="mb-3">Jawaharlal Nehru Technological University</h4>
+            <h4 class="mb-3">University College Of Engineering</h4>
+            <p class="mb-3" style="opacity: 0.8; font-size: 0.9rem;">
+                Providing efficient seating solutions for campus examinations.
+            </p>
+            <p class="mb-1">&copy; 2026 All Rights Reserved.</p>
+            <p class="small text-white-50">Developed with ❤️ by CSE Students</p>
+        </div>
+    </footer>
+
+    <!-- Developer Modal -->
+    <div id="devModal" class="modal-simple" onclick="closeDevModal(event)">
+        <div class="modal-simple-content" style="padding: 0; overflow: hidden; max-width: 420px; border-radius: 24px;"
+            onclick="event.stopPropagation()">
+            <div id="modal-content-injected"></div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/db.js"></script>
+    <script src="/js/script.js"></script>
+    <script>
+        const devData = {
+            umesh: {
+                name: 'MUCHARLA UMESH CHANDRA',
+                phone: '7569155107',
+                roll: '25XW5A0503',
+                branch: 'Computer Science Engineering',
+                year: '2nd Year',
+                img: '/images/umesh.jpeg',
+                instagram: 'mucharla_umesh',
+                linkedin: 'https://in.linkedin.com/in/mucharla-umesh-chandra-130474395/',
+                github: 'https://github.com/Umeshcse503',
+                twitter: 'https://twitter.com/Umeshcse503',
+                whatsapp: '917569155107'
+            },
+            sai: {
+                name: 'SOMA SAI KRISHNA',
+                phone: '7981675868',
+                roll: '24XW1A0555',
+                branch: 'Computer Science Engineering',
+                year: '2nd Year',
+                img: '/images/saikrishna.jpeg',
+                instagram: '',
+                linkedin: '',
+                github: '',
+                twitter: '',
+                whatsapp: '917981675868'
+            },
+            gopi: {
+                name: 'GOPI KRISHNA',
+                phone: '9502204662',
+                roll: '24XW5A0559',
+                branch: 'Computer Science Engineering',
+                year: '2nd Year',
+                img: '/images/gopi.jpeg',
+                instagram: '',
+                linkedin: '',
+                github: '',
+                twitter: '',
+                whatsapp: '919502204662'
+            },
+            yaseen: {
+                name: 'MOHAMMED YASEEN',
+                phone: '98853511023',
+                roll: '24XW5A0504',
+                branch: 'Computer Science Engineering',
+                year: '2nd Year',
+                img: '/images/yaseen.jpeg',
+                instagram: '',
+                linkedin: '',
+                github: '',
+                twitter: '',
+                whatsapp: '9198853511023'
+            }
+        };
+
+        function showDevDetails(key) {
+            const dev = devData[key];
+            if (!dev) return;
+
+            const html = `
+                <div style="position: relative; background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%); height: 120px;">
+                    <button class="btn-close btn-close-white" style="position: absolute; top: 1.25rem; right: 1.25rem; z-index: 10; filter: invert(1) grayscale(100%) brightness(200%); opacity: 0.8;" onclick="closeDevModal(event)"></button>
+                </div>
+                <div style="padding: 0 2rem 2.5rem 2rem; text-align: center; margin-top: -65px; position: relative; z-index: 2;">
+                    <img src="${dev.img}" alt="Developer" style="width: 130px; height: 130px; border-radius: 50%; border: 4px solid white; box-shadow: 0 10px 25px rgba(0,0,0,0.1); object-fit: cover; background: white; margin-bottom: 1rem;">
+
+                    <h3 style="font-weight: 800; color: #1e293b; margin-bottom: 0.25rem; font-size: 1.4rem;">${dev.name}</h3>
+                    <p style="color: #64748b; font-weight: 600; margin-bottom: 1.25rem; font-size: 0.9rem;">
+                        ${dev.branch} <br> ${dev.year}
+                    </p>
+
+                    <div style="display: flex; gap: 0.5rem; justify-content: center; margin-bottom: 1.5rem;">
+                        <span style="background: #eff6ff; color: #2563eb; padding: 0.4rem 1rem; border-radius: 999px; font-weight: 600; font-size: 0.85rem; border: 1px solid #bfdbfe;">
+                            <i class="fas fa-id-card me-1"></i> ${dev.roll}
+                        </span>
+                        <a href="tel:${dev.phone}" style="background: #f8fafc; color: #475569; padding: 0.4rem 1rem; border-radius: 999px; font-weight: 600; font-size: 0.85rem; border: 1px solid #e2e8f0; text-decoration: none; transition: all 0.2s; cursor: pointer;" onmouseover="this.style.background='#e2e8f0'; this.style.color='#0f172a'" onmouseout="this.style.background='#f8fafc'; this.style.color='#475569'">
+                            <i class="fas fa-phone-alt me-1"></i> ${dev.phone}
+                        </a>
+                    </div>
+
+                    ${(dev.instagram || dev.linkedin || dev.github || dev.twitter || dev.whatsapp) ? `
+                    <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px dashed #e2e8f0;">
+                        <p style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: #94a3b8; font-weight: 700; margin-bottom: 1rem;">Let's Connect</p>
+                        <div style="display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap;">
+                            ${dev.whatsapp ? `<a href="https://wa.me/${dev.whatsapp}" target="_blank" style="background: #25D366; color: white; padding: 0.5rem 1.25rem; border-radius: 999px; text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 10px rgba(37,211,102,0.3);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 15px rgba(37,211,102,0.4)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 10px rgba(37,211,102,0.3)';"><i class="fab fa-whatsapp me-1" style="font-size: 1.05rem;"></i> WhatsApp</a>` : ''}
+
+                            ${dev.instagram ? `<a href="https://instagram.com/${dev.instagram}" target="_blank" style="background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); color: white; padding: 0.5rem 1.25rem; border-radius: 999px; text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 10px rgba(220,39,67,0.3);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 15px rgba(220,39,67,0.4)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 10px rgba(220,39,67,0.3)';"><i class="fab fa-instagram me-1"></i> Instagram</a>` : ''}
+
+                            ${dev.linkedin ? `<a href="${dev.linkedin}" target="_blank" style="background: #0A66C2; color: white; padding: 0.5rem 1.25rem; border-radius: 999px; text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 10px rgba(10,102,194,0.3);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 15px rgba(10,102,194,0.4)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 10px rgba(10,102,194,0.3)';"><i class="fab fa-linkedin me-1"></i> LinkedIn</a>` : ''}
+
+                            ${dev.github ? `<a href="${dev.github}" target="_blank" style="background: #24292e; color: white; padding: 0.5rem 1.25rem; border-radius: 999px; text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 10px rgba(36,41,46,0.3);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 15px rgba(36,41,46,0.4)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 10px rgba(36,41,46,0.3)';"><i class="fab fa-github me-1"></i> GitHub</a>` : ''}
+
+                            ${dev.twitter ? `<a href="${dev.twitter}" target="_blank" style="background: #1DA1F2; color: white; padding: 0.5rem 1.25rem; border-radius: 999px; text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 10px rgba(29,161,242,0.3);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 15px rgba(29,161,242,0.4)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 10px rgba(29,161,242,0.3)';"><i class="fab fa-twitter me-1"></i> Twitter</a>` : ''}
+                        </div>
+                    </div>` : ''}
+                </div>
+            `;
+            document.getElementById('modal-content-injected').innerHTML = html;
+            document.getElementById('devModal').classList.add('active');
+        }
+
+        function closeDevModal(e) {
+            document.getElementById('devModal').classList.remove('active');
+        }
+
+        // Reveal animation on scroll
+        function reveal() {
+            var reveals = document.querySelectorAll(".reveal");
+            for (var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var elementTop = reveals[i].getBoundingClientRect().top;
+                var elementVisible = 150;
+                if (elementTop < windowHeight - elementVisible) {
+                    reveals[i].classList.add("active");
+                }
+            }
+        }
+        window.addEventListener("scroll", reveal);
+        document.addEventListener('DOMContentLoaded', reveal);
+    </script>
+</body>
+
+</html>

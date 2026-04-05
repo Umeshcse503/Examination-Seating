@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - JNTU Auto Seating Allotment</title>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="login-page">
+
+    <a href="homepage.html" style="position: absolute; top: 1.5rem; left: 1.5rem; color: var(--primary); text-decoration: none; font-weight: 600; font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem; background: white; padding: 0.5rem 1rem; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); z-index: 100;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+        Back to Home Page
+    </a>
+
+    <div class="login-card">
+        
+        <div class="form-tabs">
+            <div class="form-tab active" id="tabLogin" onclick="switchLoginTab('login')">Login</div>
+            <div class="form-tab" id="tabRequest" onclick="switchLoginTab('request')">Request Access</div>
+        </div>
+
+        <div class="login-header">
+            <h1>Auto Seating Allotment</h1>
+            <p>JNTU Wanaparthy College of Engineering</p>
+        </div>
+
+        <!-- Form Transitions Container -->
+        <div class="step-container">
+            <!-- Login Form -->
+            <form id="loginForm" class="step active">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required placeholder="Enter your username" autocomplete="username">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required placeholder="Enter your password" autocomplete="current-password">
+            </div>
+
+            <div id="loginError" class="error-msg"></div>
+
+            <div class="flex gap-4" style="margin-top: 1.5rem;">
+                <button type="submit" class="btn btn-primary" style="flex: 2; font-size: 1rem;">Sign In</button>
+                <button type="button" id="resetBtn" class="btn btn-secondary" style="flex: 1; font-size: 1rem;">Reset</button>
+            </div>
+        </form>
+
+            <!-- Request Access Form -->
+            <form id="requestForm" class="step exit-right">
+            <div class="form-group">
+                <label for="reqName">Full Name</label>
+                <input type="text" id="reqName" required placeholder="e.g. Dr. Jane Doe">
+            </div>
+            <div class="form-group">
+                <label for="reqEmail">Email Address</label>
+                <input type="email" id="reqEmail" required placeholder="e.g. jane@jntu.edu">
+            </div>
+            <div class="form-group flex gap-4">
+                <div style="flex:1;">
+                    <label for="reqUsername">Username</label>
+                    <input type="text" id="reqUsername" required placeholder="username">
+                </div>
+                <div style="flex:1;">
+                    <label for="reqRole">Role</label>
+                    <select id="reqRole" onchange="toggleDeptField(this.value)">
+                        <option value="staff">Staff Member</option>
+                        <option value="hod">HOD</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div id="deptGroup" class="form-group">
+                <label for="reqDept">Department/Branch</label>
+                <select id="reqDept">
+                    <option value="General">General</option>
+                    <option value="CSE">Computer Science (CSE)</option>
+                    <option value="ECE">Electronics (ECE)</option>
+                    <option value="EEE">Electrical (EEE)</option>
+                    <option value="MECH">Mechanical (ME)</option>
+                    <option value="CIVIL">Civil (CE)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="reqPassword">Password</label>
+                <input type="password" id="reqPassword" required placeholder="Create a password" autocomplete="new-password">
+            </div>
+
+            <div id="requestMsg" class="error-msg" style="color: var(--success); background: rgba(16, 185, 129, 0.1);"></div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem; font-size: 1rem;">Submit Request</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="/js/db.js"></script>
+    <script src="/js/auth.js"></script>
+    <script>
+        function switchLoginTab(tab) {
+            document.getElementById('tabLogin').classList.toggle('active', tab === 'login');
+            document.getElementById('tabRequest').classList.toggle('active', tab === 'request');
+            
+            const loginForm = document.getElementById('loginForm');
+            const requestForm = document.getElementById('requestForm');
+            
+            if (tab === 'login') {
+                requestForm.className = 'step exit-right';
+                loginForm.className = 'step active';
+            } else {
+                loginForm.className = 'step exit-left';
+                requestForm.className = 'step active';
+            }
+            
+            // Clear messages
+            document.getElementById('loginError').style.display = 'none';
+            document.getElementById('requestMsg').style.display = 'none';
+
+            // Clear inputs when switching (User request)
+            if (tab === 'login') loginForm.reset();
+            else requestForm.reset();
+        }
+        function toggleDeptField(role) {
+            const deptGroup = document.getElementById('deptGroup');
+            deptGroup.style.display = (role === 'staff' || role === 'hod') ? 'block' : 'none';
+        }
+
+        // Logout redirection logic
+        function logout() {
+            // Clear any session/storage if needed
+            localStorage.clear();
+            window.location.href = 'index.html';
+        }
+        
+        // Ensure forms are empty on load (Prevent showing used credentials)
+        window.addEventListener('load', () => {
+            document.getElementById('loginForm').reset();
+            document.getElementById('requestForm').reset();
+        });
+
+        // Add logout listener to UI if it exists, or just expose global
+        window.handleLogout = logout;
+    </script>
+</body>
+</html>
