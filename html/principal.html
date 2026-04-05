@@ -25,7 +25,8 @@
 
     <main class="main-content">
         <header class="header">
-            <div>
+            <button id="mobileMenuBtn" class="mobile-menu-btn">☰</button>
+            <div style="flex: 1;">
                 <h1 style="font-size: 1.75rem; font-weight: 800; letter-spacing: -0.5px;" id="headerUserRole">Principal Dashboard</h1>
                 <p style="color: var(--text-muted); font-size: 0.95rem;">Approve staff accounts and seating allocations.</p>
             </div>
@@ -33,6 +34,8 @@
                 <i class="fas fa-sign-out-alt me-2"></i>Logout
             </button>
         </header>
+
+        <div id="sidebarOverlay" class="sidebar-overlay"></div>
 
         <!-- Seating Requests Section -->
         <section id="requestsSection" class="animate-fade-in">
@@ -180,5 +183,33 @@
     <script src="/js/auth.js"></script>
     <script src="/js/export.js"></script>
     <script src="/js/principal.js"></script>
+    <script>
+        // Sidebar Toggle Script
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const sidebar = document.querySelector('.sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+        if (mobileMenuBtn && sidebar && sidebarOverlay) {
+            mobileMenuBtn.onclick = () => {
+                sidebar.classList.add('active');
+                sidebarOverlay.classList.add('active');
+            };
+
+            sidebarOverlay.onclick = () => {
+                sidebar.classList.remove('active');
+                sidebarOverlay.classList.remove('active');
+            };
+
+            // Close sidebar when clicking a link on mobile
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', () => {
+                    if (window.innerWidth <= 768) {
+                        sidebar.classList.remove('active');
+                        sidebarOverlay.classList.remove('active');
+                    }
+                });
+            });
+        }
+    </script>
 </body>
 </html>
