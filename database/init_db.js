@@ -4,12 +4,13 @@ const path = require('path');
 
 async function initDB() {
     const connectionConfig = {
-        host: '127.0.0.1',
-        user: 'root',
-        password: '', // Default XAMPP password
+        host: process.env.DB_HOST || '127.0.0.1',
+        user: process.env.DB_USER || 'root',
+        password: process.env.DB_PASSWORD || '',
+        port: process.env.DB_PORT || 3306,
     };
 
-    const dbName = 'jntu_exam_management';
+    const dbName = process.env.DB_NAME || 'jntu_exam_management';
     const sqlFile = path.join(__dirname, 'mysql_setup.sql');
 
     try {
