@@ -16,6 +16,7 @@
     <aside class="sidebar">
         <div class="sidebar-header">
             JNTU SEATING ARRANGEMENT
+            <button class="sidebar-close" id="sidebarClose">&times;</button>
         </div>
         <nav>
             <a href="#" class="nav-link active" id="navUsers">User Management</a>
@@ -209,10 +210,6 @@
             <i class="fas fa-clipboard-list"></i>
             <span>Logs</span>
         </a>
-        <a href="#" class="bottom-nav-link" onclick="Auth.logout()">
-            <i class="fas fa-sign-out-alt"></i>
-            <span>Logout</span>
-        </a>
     </nav>
 
     <script src="/js/db.js"></script>
@@ -223,6 +220,7 @@
         const mobileMenuBtn = document.getElementById('mobileMenuBtn');
         const sidebar = document.querySelector('.sidebar');
         const sidebarOverlay = document.getElementById('sidebarOverlay');
+        const sidebarClose = document.getElementById('sidebarClose');
 
         if (mobileMenuBtn && sidebar && sidebarOverlay) {
             mobileMenuBtn.onclick = () => {
@@ -234,6 +232,13 @@
                 sidebar.classList.remove('active');
                 sidebarOverlay.classList.remove('active');
             };
+
+            if (sidebarClose) {
+                sidebarClose.onclick = () => {
+                    sidebar.classList.remove('active');
+                    sidebarOverlay.classList.remove('active');
+                };
+            }
 
             // Close sidebar when clicking a link on mobile
             document.querySelectorAll('.nav-link').forEach(link => {
@@ -256,20 +261,6 @@
             const fab = document.getElementById('mobileFab');
             if(fab) fab.style.display = tab === 'users' ? 'flex' : 'none';
         }
-
-        document.getElementById('btnBottomUsers').onclick = (e) => {
-            e.preventDefault();
-            adminScript.switchTab('users');
-            syncBottomNav('users');
-        };
-
-        document.getElementById('btnBottomLogs').onclick = (e) => {
-            e.preventDefault();
-            adminScript.switchTab('logs');
-            syncBottomNav('logs');
-        };
-    </script>
-</body>
     </script>
 </body>
 </html>

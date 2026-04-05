@@ -1021,8 +1021,21 @@ footer {
     }
 }
 
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: 999;
+}
+
 .sidebar-overlay.active {
     display: block;
+}
+
+.sidebar-close {
+    display: none; /* Hidden on desktop */
 }
 
 
@@ -1033,9 +1046,38 @@ footer {
     .sidebar {
         display: none !important;
     }
-    
     .sidebar.active {
         display: flex !important;
+    }
+
+    .sidebar-close {
+        display: block !important;
+        position: absolute;
+        top: 1.25rem;
+        right: 1.25rem;
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
+        color: white;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        cursor: pointer;
+        z-index: 1002;
+    }
+
+    /* Stack date/exam selectors on mobile */
+    .form-group-flex-responsive {
+        flex-direction: column !important;
+        gap: 1.5rem !important;
+    }
+
+    .form-group-flex-responsive > div {
+        width: 100% !important;
+        flex: none !important;
     }
 
     /* Bottom Navigation Bar */
