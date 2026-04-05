@@ -62,6 +62,7 @@ const staffScript = {
     async renderMyAllocations() {
         const user = Auth.getCurrentUser();
         const allocations = await DB.getAllocations();
+        this.state.allocations = allocations; // Store globally for ExportUtils reference
         const myAllocations = allocations.filter(a => a.created_by == user.staff_id);
         const tbody = document.querySelector('#myAllocationsTable tbody');
         const mobileContainer = document.getElementById('mobileCardList');
@@ -71,7 +72,7 @@ const staffScript = {
         if (mobileContainer) mobileContainer.innerHTML = '';
 
         if (myAllocations.length === 0) {
-            const emptyMsg = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 2rem;">You haven't generated any seating arrangements yet.</td></tr>`;
+            const emptyMsg = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 2rem;">No allocations submitted yet. Float on over to 'Schedule Exam' to start!</td></tr>`;
             tbody.innerHTML = emptyMsg;
             if(mobileContainer) mobileContainer.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 2rem;">No seating arrangements yet.</div>`;
             return;
@@ -80,16 +81,31 @@ const staffScript = {
         myAllocations.sort((a,b) => new Date(b.created_at) - new Date(a.created_at)).forEach(a => {
             const tr = document.createElement('tr');
             let statusBadge = `<span style="padding: 0.25rem 0.5rem; border-radius: 99px; font-size: 0.75rem; font-weight: 600; background: rgba(0,0,0,0.05);">${a.status}</span>`;
-            if (a.status === 'approved') statusBadge = `<span style="padding: 0.25rem 0.5rem; border-radius: 99px; font-size: 0.75rem; font-weight: 600; background: rgba(16,185,129,0.1); color: var(--success);">Approved</span>`;
-            if (a.status === 'correction' || a.status === 'rejected') statusBadge = `<span style="padding: 0.25rem 0.5rem; border-radius: 99px; font-size: 0.75rem; font-weight: 600; background: rgba(239,68,68,0.1); color: var(--danger);">${a.status}</span>`;
+            if (statusBadge && a.status === 'approved') statusBadge = `<span style="padding: 0.25rem 0.5rem; border-radius: 99px; font-size: 0.75rem; font-weight: 600; background: rgba(16,185,129,0.1); color: var(--success);">Approved</span>`;
+            if (statusBadge && (a.status === 'correction' || a.status === 'rejected')) statusBadge = `<span style="padding: 0.25rem 0.5rem; border-radius: 99px; font-size: 0.75rem; font-weight: 600; background: rgba(239,68,68,0.1); color: var(--danger);">${a.status}</span>`;
+
+            let actionsCell = "";
+            if (a.status === 'approved') {
+                actionsCell = `<button class="btn btn-primary" style="padding: 0.4rem 0.8rem; font-size: 0.75rem; background: var(--success); border-color: var(--success);" onclick="ExportUtils.exportToExcel(staffScript.state.allocations.find(allc => allc.id == '${a.id}'))">⬇️ Excel</button>`;
+            }
+
+            let roomsText = a.rooms ? `${a.rooms.length} Rooms` : '0 Rooms';
+            if(a.rooms && a.rooms.length > 0) {
+                 roomsText = `<span title="${a.rooms.map(r=>r.roomName).join(', ')}"><b>${a.rooms.length} Halls</b></span>`;
+            }
 
             tr.innerHTML = `
                 <td>${new Date(a.created_at).toLocaleDateString()}</td>
-                <td><strong style="color: var(--primary);">${a.examType}</strong><br><small style="color: var(--text-muted);">at ${a.examTime}</small></td>
+                <td><strong style="color: var(--primary);">${a.examType || a.exam_type}</strong><br><small style="color: var(--text-muted);">at ${a.examTime}</small></td>
                 <td>${a.batch}</td>
-                <td>${a.rooms ? a.rooms.length : 0} Rooms</td>
-                <td>${a.faculties ? a.faculties.length : 0} Faculty</td>
-                <td>${statusBadge}</td>
+                <td>${roomsText}</td>
+                <td>${a.faculties ? a.faculties.length : 0} Staff</td>
+                <td>
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem; align-items: flex-start;">
+                        ${statusBadge}
+                        ${actionsCell}
+                    </div>
+                </td>
             `;
             tbody.appendChild(tr);
 
@@ -99,7 +115,7 @@ const staffScript = {
                 card.className = 'mobile-card animate-slide-up';
                 card.innerHTML = `
                     <div class="mobile-card-header">
-                        <div class="mobile-card-title">${a.examType}</div>
+                        <div class="mobile-card-title">${a.examType || a.exam_type}</div>
                         ${statusBadge}
                     </div>
                     <div class="mobile-card-row">
@@ -114,10 +130,27 @@ const staffScript = {
                         <span class="mobile-card-label">Rooms:</span>
                         <span class="mobile-card-value">${a.rooms ? a.rooms.length : 0} Halls</span>
                     </div>
+                    <div class="mt-3">
+                        ${actionsCell}
+                    </div>
                 `;
                 mobileContainer.appendChild(card);
             }
         });
+    },
+
+    switchTab(tab) {
+        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+        const navId = tab === 'schedule' ? 'navSchedule' : 'navMyAllocations';
+        const navEl = document.getElementById(navId);
+        if(navEl) navEl.classList.add('active');
+
+        document.getElementById('scheduleSection').style.display = tab === 'schedule' ? 'block' : 'none';
+        document.getElementById('myAllocationsSection').style.display = tab === 'myAllocations' ? 'block' : 'none';
+        
+        if(tab === 'myAllocations') {
+            this.renderMyAllocations();
+        }
     },
 
     bindEvents() {
@@ -954,57 +987,6 @@ const staffScript = {
             console.error('Save error:', e);
             alert('Error saving allocation: ' + e.message);
         }
-    },
-
-    /* --- HISTORY --- */
-
-    async renderMyAllocations() {
-        this.state.allocations = await DB.getAllocations();
-        const allocations = this.state.allocations.filter(a => a.created_by === this.currentUser.staff_id);
-        const tbody = document.querySelector('#myAllocationsTable tbody');
-        tbody.innerHTML = '';
-
-        if(allocations.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 2rem;">No allocations submitted yet. Float on over to 'Schedule Exam' to start!</td></tr>`;
-            return;
-        }
-
-        allocations.reverse().forEach(a => {
-             const tr = document.createElement('tr');
-             
-             let statusBadge = '';
-             if(a.status === 'approved') statusBadge = `<span style="background: rgba(16,185,129,0.1); color: var(--success); padding: 0.25rem 0.75rem; border-radius: 999px;">Approved</span>`;
-             else if(a.status === 'rejected') statusBadge = `<span style="background: rgba(239,68,68,0.1); color: var(--danger); padding: 0.25rem 0.75rem; border-radius: 999px;">Rejected</span>`;
-             else statusBadge = `<span style="background: rgba(217,119,6,0.1); color: var(--secondary); padding: 0.25rem 0.75rem; border-radius: 999px;">Pending</span>`;
-
-             // Compatibility with old data structure if needed, or format new one
-             let roomsText = a.room || (a.rooms ? `${a.rooms.length} Rooms` : '-');
-             let facultyText = a.faculty || (a.faculties ? `${a.faculties.length} Staff` : '-');
-             
-             if(a.rooms && a.rooms.length > 0) {
-                 roomsText = `<span title="${a.rooms.map(r=>r.roomName).join(', ')}"><b>${a.rooms.length} Rooms</b><br><span style="font-size: 0.7rem; color: #888;">(Hover to view)</span></span>`;
-             }
-
-             let actionsCell = "";
-             if (a.status === 'approved') {
-                 actionsCell = `<button class="btn btn-primary" style="padding: 0.4rem 0.8rem; font-size: 0.75rem; background: var(--success); border-color: var(--success);" onclick="ExportUtils.exportToExcel(staffScript.state.allocations.find(allc => allc.id === '${a.id}'))">⬇️ Download Excel</button>`;
-             }
-
-             tr.innerHTML = `
-                 <td>${a.created_at ? new Date(a.created_at).toLocaleDateString() : 'N/A'}</td>
-                 <td style="font-weight: 600;">${a.exam_type || a.examType || 'N/A'} (at ${a.examTime || '-'})</td>
-                 <td>${a.batch || 'N/A'}</td>
-                 <td>${roomsText}</td>
-                 <td>${facultyText}</td>
-                 <td>
-                    <div style="display: flex; flex-direction: column; gap: 0.5rem; align-items: flex-start;">
-                        ${statusBadge}
-                        ${actionsCell}
-                    </div>
-                 </td>
-             `;
-             tbody.appendChild(tr);
-         });
     }
 };
 
