@@ -51,7 +51,10 @@ const principalScript = {
         this.state.allocations = await DB.getAllocations();
         const allocations = this.state.allocations.filter(a => a.status === 'pending');
         const tbody = document.querySelector('#requestsTable tbody');
+        const mobileContainer = document.getElementById('mobileRequestCards');
+        
         tbody.innerHTML = '';
+        if(mobileContainer) mobileContainer.innerHTML = '';
 
         if (allocations.length === 0) {
             tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: var(--text-muted); padding: 2rem;">No pending seating requests.</td></tr>`;
@@ -79,6 +82,35 @@ const principalScript = {
                 </td>
             `;
             tbody.appendChild(tr);
+
+            // Mobile Card
+            if (mobileContainer) {
+                const card = document.createElement('div');
+                card.className = 'mobile-card animate-slide-up';
+                card.innerHTML = `
+                    <div class="mobile-card-header">
+                        <div class="mobile-card-title">${a.examType}</div>
+                        ${this.getStatusBadge(a.status)}
+                    </div>
+                    <div class="mobile-card-row">
+                        <span class="mobile-card-label">By:</span>
+                        <span class="mobile-card-value">${staffIndicator}</span>
+                    </div>
+                    <div class="mobile-card-row">
+                        <span class="mobile-card-label">Date:</span>
+                        <span class="mobile-card-value">${a.examDate}</span>
+                    </div>
+                    <div class="mobile-card-row">
+                        <span class="mobile-card-label">HOD:</span>
+                        <span class="mobile-card-value">${a.hodRemark || 'None'}</span>
+                    </div>
+                    <div class="flex gap-2 mt-3">
+                        <button class="btn btn-secondary flex-1" style="font-size: 0.8rem;" onclick="principalScript.openDetailsModal('${a.id}')">View</button>
+                        <button class="btn btn-primary flex-1" style="font-size: 0.8rem;" onclick="principalScript.openActionModal('${a.id}', 'approved')">Approve</button>
+                    </div>
+                `;
+                mobileContainer.appendChild(card);
+            }
         });
     },
 
@@ -86,7 +118,10 @@ const principalScript = {
         this.state.allocations = await DB.getAllocations();
         const allocations = this.state.allocations.filter(a => a.status !== 'pending');
         const tbody = document.querySelector('#historyTable tbody');
+        const mobileContainer = document.getElementById('mobileHistoryCards');
+        
         tbody.innerHTML = '';
+        if(mobileContainer) mobileContainer.innerHTML = '';
 
         if (allocations.length === 0) {
             tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--text-muted); padding: 2rem;">No history found.</td></tr>`;
@@ -116,13 +151,37 @@ const principalScript = {
                 </td>
             `;
             tbody.appendChild(tr);
+
+            // Mobile Card
+            if (mobileContainer) {
+                const card = document.createElement('div');
+                card.className = 'mobile-card animate-slide-up';
+                card.innerHTML = `
+                    <div class="mobile-card-header">
+                        <div class="mobile-card-title">${a.examType}</div>
+                        ${this.getStatusBadge(a.status)}
+                    </div>
+                    <div class="mobile-card-row">
+                        <span class="mobile-card-label">Date:</span>
+                        <span class="mobile-card-value">${a.examDate}</span>
+                    </div>
+                    <div class="mobile-card-row">
+                        <span class="mobile-card-label">Batch:</span>
+                        <span class="mobile-card-value">${a.batch}</span>
+                    </div>
+                `;
+                mobileContainer.appendChild(card);
+            }
         });
     },
 
     async renderAccounts() {
         const users = (await DB.getUsers()).filter(u => u.status === 'pending');
         const tbody = document.querySelector('#accountsTable tbody');
+        const mobileContainer = document.getElementById('mobileAccountCards');
+        
         tbody.innerHTML = '';
+        if(mobileContainer) mobileContainer.innerHTML = '';
 
         if (users.length === 0) {
             tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 2rem;">No pending staff account requests.</td></tr>`;
@@ -143,6 +202,31 @@ const principalScript = {
                 </td>
             `;
             tbody.appendChild(tr);
+
+            // Mobile Card
+            if (mobileContainer) {
+                const card = document.createElement('div');
+                card.className = 'mobile-card';
+                card.innerHTML = `
+                    <div class="mobile-card-header">
+                        <div class="mobile-card-title">${u.name}</div>
+                        <span class="badge" style="background:#fef3c7; color:#92400e;">Pending</span>
+                    </div>
+                    <div class="mobile-card-row">
+                        <span class="mobile-card-label">Email:</span>
+                        <span class="mobile-card-value">${u.email}</span>
+                    </div>
+                    <div class="mobile-card-row">
+                        <span class="mobile-card-label">Role:</span>
+                        <span class="mobile-card-value">${u.role.toUpperCase()}</span>
+                    </div>
+                    <div class="flex gap-2 mt-3">
+                        <button class="btn btn-primary flex-1" style="font-size: 0.8rem;" onclick="principalScript.approveAccount(${u.staff_id})">Approve</button>
+                        <button class="btn btn-secondary flex-1" style="font-size: 0.8rem; color:var(--danger);" onclick="principalScript.rejectAccount(${u.staff_id})">Reject</button>
+                    </div>
+                `;
+                mobileContainer.appendChild(card);
+            }
         });
     },
 
@@ -156,7 +240,10 @@ const principalScript = {
     async renderLogs() {
         const logs = await DB.getLogs();
         const tbody = document.querySelector('#logsTable tbody');
+        const mobileContainer = document.getElementById('mobileLogCards');
+        
         tbody.innerHTML = '';
+        if(mobileContainer) mobileContainer.innerHTML = '';
 
         if (logs.length === 0) {
             tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 2rem;">No logs recorded yet.</td></tr>`;
@@ -177,6 +264,27 @@ const principalScript = {
                 <td>${l.approvedByName || 'ID: ' + l.approved_by}</td>
             `;
             tbody.appendChild(tr);
+
+            // Mobile Card
+            if (mobileContainer) {
+                const card = document.createElement('div');
+                card.className = 'mobile-card';
+                card.innerHTML = `
+                    <div class="mobile-card-header">
+                        <div class="mobile-card-title">${l.action}</div>
+                        <span style="font-size: 0.75rem; color: var(--text-muted);">${new Date(l.timestamp).toLocaleDateString()}</span>
+                    </div>
+                    <div class="mobile-card-row">
+                        <span class="mobile-card-label">Dept:</span>
+                        <span class="mobile-card-value">${l.dept || '-'}</span>
+                    </div>
+                    <div class="mobile-card-row">
+                        <span class="mobile-card-label">By:</span>
+                        <span class="mobile-card-value">${l.createdByName || 'System'}</span>
+                    </div>
+                `;
+                mobileContainer.appendChild(card);
+            }
         });
     },
 

@@ -41,7 +41,7 @@
         <section id="requestsSection" class="animate-fade-in">
             <div class="card">
                 <h2 class="card-title">Pending Seating Allocations</h2>
-                <div style="overflow-x: auto;">
+                <div style="overflow-x: auto;" class="desktop-table-container">
                     <table id="requestsTable">
                         <thead>
                             <tr>
@@ -61,6 +61,11 @@
                         </tbody>
                     </table>
                 </div>
+
+                <!-- Mobile Card View -->
+                <div id="mobileRequestCards" class="mobile-card-list">
+                    <!-- Populated by JS -->
+                </div>
             </div>
             
             <div class="card" style="margin-top: 2rem;">
@@ -68,7 +73,7 @@
                     <h2 class="card-title" style="margin-bottom: 0; border-bottom: none; padding-bottom: 0;">Approved / Rejected Allocations History</h2>
                     <button class="btn btn-secondary" style="color: #EF4444; border-color: #EF4444;" onclick="principalScript.clearHistory()">Clear Complete History</button>
                 </div>
-                <div style="overflow-x: auto;">
+                <div style="overflow-x: auto;" class="desktop-table-container">
                     <table id="historyTable">
                         <thead>
                             <tr>
@@ -87,6 +92,11 @@
                         </tbody>
                     </table>
                 </div>
+
+                <!-- Mobile Card View -->
+                <div id="mobileHistoryCards" class="mobile-card-list">
+                    <!-- Populated by JS -->
+                </div>
             </div>
         </section>
 
@@ -94,7 +104,7 @@
         <section id="accountsSection" class="animate-fade-in" style="display: none;">
              <div class="card">
                 <h2 class="card-title">Pending Staff Account Registrations</h2>
-                <div style="overflow-x: auto;">
+                <div style="overflow-x: auto;" class="desktop-table-container">
                     <table id="accountsTable">
                         <thead>
                             <tr>
@@ -111,6 +121,11 @@
                         </tbody>
                     </table>
                 </div>
+
+                <!-- Mobile Card View -->
+                <div id="mobileAccountCards" class="mobile-card-list">
+                    <!-- Populated by JS -->
+                </div>
             </div>
         </section>
 
@@ -118,7 +133,7 @@
         <section id="logsSection" class="animate-fade-in" style="display: none;">
             <div class="card">
                 <h2 class="card-title">Exam Approval Logs</h2>
-                <div style="overflow-x: auto;">
+                <div style="overflow-x: auto;" class="desktop-table-container">
                     <table id="logsTable">
                         <thead>
                             <tr>
@@ -134,6 +149,11 @@
                             <!-- Populated by JS -->
                         </tbody>
                     </table>
+                </div>
+
+                <!-- Mobile Card View -->
+                <div id="mobileLogCards" class="mobile-card-list">
+                    <!-- Populated by JS -->
                 </div>
             </div>
         </section>
@@ -179,6 +199,32 @@
         </div>
     </div>
 
+    </main>
+
+    <!-- Mobile UI Elements -->
+    <button class="fab" onclick="principalScript.switchTab('Accounts')" id="mobileFab">
+        <i class="fas fa-user-check"></i>
+    </button>
+
+    <nav class="bottom-nav">
+        <a href="#" class="bottom-nav-link active" id="btnBottomRequests">
+            <i class="fas fa-tasks"></i>
+            <span>Requests</span>
+        </a>
+        <a href="#" class="bottom-nav-link" id="btnBottomAccounts">
+            <i class="fas fa-user-shield"></i>
+            <span>Approvals</span>
+        </a>
+        <a href="#" class="bottom-nav-link" id="btnBottomLogs">
+            <i class="fas fa-history"></i>
+            <span>Logs</span>
+        </a>
+        <a href="#" class="bottom-nav-link" onclick="Auth.logout()">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Logout</span>
+        </a>
+    </nav>
+
     <script src="/js/db.js"></script>
     <script src="/js/auth.js"></script>
     <script src="/js/export.js"></script>
@@ -210,6 +256,38 @@
                 });
             });
         }
+
+        // Bottom Nav Sync Logic
+        function syncBottomNav(tab) {
+            document.querySelectorAll('.bottom-nav-link').forEach(l => l.classList.remove('active'));
+            if(tab === 'Requests') document.getElementById('btnBottomRequests').classList.add('active');
+            if(tab === 'Accounts') document.getElementById('btnBottomAccounts').classList.add('active');
+            if(tab === 'Logs') document.getElementById('btnBottomLogs').classList.add('active');
+            
+            // Show/Hide FAB based on tab
+            const fab = document.getElementById('mobileFab');
+            if(fab) fab.style.display = tab === 'Accounts' ? 'flex' : 'none';
+        }
+
+        document.getElementById('btnBottomRequests').onclick = (e) => {
+            e.preventDefault();
+            principalScript.switchTab('Requests');
+            syncBottomNav('Requests');
+        };
+
+        document.getElementById('btnBottomAccounts').onclick = (e) => {
+            e.preventDefault();
+            principalScript.switchTab('Accounts');
+            syncBottomNav('Accounts');
+        };
+
+        document.getElementById('btnBottomLogs').onclick = (e) => {
+            e.preventDefault();
+            principalScript.switchTab('Logs');
+            syncBottomNav('Logs');
+        };
+    </script>
+</body>
     </script>
 </body>
 </html>

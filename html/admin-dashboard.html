@@ -22,6 +22,7 @@
 
     </aside>
 
+    <main class="main-content">
         <header class="header">
             <button id="mobileMenuBtn" class="mobile-menu-btn">☰</button>
             <div style="flex: 1;">
@@ -43,7 +44,7 @@
                      <button class="btn btn-primary" onclick="adminScript.showAddUserModal()">+ Add User</button>
                 </div>
                 
-                <div style="overflow-x: auto;">
+                <div style="overflow-x: auto;" class="desktop-table-container">
                     <table id="usersTable">
                         <thead>
                             <tr>
@@ -60,6 +61,11 @@
                         </tbody>
                     </table>
                 </div>
+
+                <!-- Mobile Card View -->
+                <div id="mobileUserCards" class="mobile-card-list">
+                    <!-- Populated by JS -->
+                </div>
             </div>
         </section>
 
@@ -68,7 +74,7 @@
         <section id="logsSection" class="animate-fade-in" style="display: none;">
             <div class="card">
                 <h2 class="card-title">Exam Approval Logs</h2>
-                <div style="overflow-x: auto;">
+                <div style="overflow-x: auto;" class="desktop-table-container">
                     <table id="logsTable">
                         <thead>
                             <tr>
@@ -84,6 +90,13 @@
                         </tbody>
                     </table>
                 </div>
+
+                <!-- Mobile Card View -->
+                <div id="mobileLogCards" class="mobile-card-list">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </section>
             </div>
         </section>
 
@@ -178,6 +191,28 @@
         </div>
     </div>
 
+    </main>
+
+    <!-- Mobile UI Elements -->
+    <button class="fab" onclick="adminScript.showAddUserModal()" id="mobileFab">
+        <i class="fas fa-user-plus"></i>
+    </button>
+
+    <nav class="bottom-nav">
+        <a href="#" class="bottom-nav-link active" id="btnBottomUsers">
+            <i class="fas fa-users"></i>
+            <span>Users</span>
+        </a>
+        <a href="#" class="bottom-nav-link" id="btnBottomLogs">
+            <i class="fas fa-clipboard-list"></i>
+            <span>Logs</span>
+        </a>
+        <a href="#" class="bottom-nav-link" onclick="Auth.logout()">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Logout</span>
+        </a>
+    </nav>
+
     <script src="/js/db.js"></script>
     <script src="/js/auth.js"></script>
     <script src="/js/admin.js"></script>
@@ -208,6 +243,31 @@
                 });
             });
         }
+
+        // Bottom Nav Sync Logic
+        function syncBottomNav(tab) {
+            document.querySelectorAll('.bottom-nav-link').forEach(l => l.classList.remove('active'));
+            if(tab === 'users') document.getElementById('btnBottomUsers').classList.add('active');
+            if(tab === 'logs') document.getElementById('btnBottomLogs').classList.add('active');
+            
+            // Show/Hide FAB based on tab
+            const fab = document.getElementById('mobileFab');
+            if(fab) fab.style.display = tab === 'users' ? 'flex' : 'none';
+        }
+
+        document.getElementById('btnBottomUsers').onclick = (e) => {
+            e.preventDefault();
+            adminScript.switchTab('users');
+            syncBottomNav('users');
+        };
+
+        document.getElementById('btnBottomLogs').onclick = (e) => {
+            e.preventDefault();
+            adminScript.switchTab('logs');
+            syncBottomNav('logs');
+        };
+    </script>
+</body>
     </script>
 </body>
 </html>

@@ -33,7 +33,10 @@ const adminScript = {
         const users = await DB.getUsers();
         this.users = users; // Store for ID-based lookup
         const tbody = document.querySelector('#usersTable tbody');
+        const mobileContainer = document.getElementById('mobileUserCards');
+        
         tbody.innerHTML = '';
+        if(mobileContainer) mobileContainer.innerHTML = '';
 
         users.forEach(u => {
             const tr = document.createElement('tr');
@@ -70,6 +73,30 @@ const adminScript = {
                 <td>${actionButtons}</td>
             `;
             tbody.appendChild(tr);
+
+            // Mobile Card
+            if (mobileContainer) {
+                const card = document.createElement('div');
+                card.className = 'mobile-card animate-slide-up';
+                card.innerHTML = `
+                    <div class="mobile-card-header">
+                        <div class="mobile-card-title">${u.name}</div>
+                        ${statusBadge}
+                    </div>
+                    <div class="mobile-card-row">
+                        <span class="mobile-card-label">Role:</span>
+                        <span class="mobile-card-value">${roleBadge}</span>
+                    </div>
+                    <div class="mobile-card-row">
+                        <span class="mobile-card-label">Dept:</span>
+                        <span class="mobile-card-value">${u.department || 'General'}</span>
+                    </div>
+                    <div class="flex gap-2 mt-3">
+                        ${actionButtons}
+                    </div>
+                `;
+                mobileContainer.appendChild(card);
+            }
         });
     },
 
@@ -84,10 +111,15 @@ const adminScript = {
     async renderLogs() {
         const logs = await DB.getLogs();
         const tbody = document.querySelector('#logsTable tbody');
+        const mobileContainer = document.getElementById('mobileLogCards');
+        
         tbody.innerHTML = '';
+        if(mobileContainer) mobileContainer.innerHTML = '';
 
         if (logs.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 2rem;">No logs recorded yet.</td></tr>`;
+            const emptyMsg = `<tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 2rem;">No logs recorded yet.</td></tr>`;
+            tbody.innerHTML = emptyMsg;
+            if(mobileContainer) mobileContainer.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 2rem;">No logs yet.</div>`;
             return;
         }
 
@@ -104,6 +136,27 @@ const adminScript = {
                 <td>${l.approvedByName || 'ID: ' + l.approved_by}</td>
             `;
             tbody.appendChild(tr);
+
+            // Mobile Card
+            if (mobileContainer) {
+                const card = document.createElement('div');
+                card.className = 'mobile-card animate-slide-up';
+                card.innerHTML = `
+                    <div class="mobile-card-header">
+                        <div class="mobile-card-title">${l.action}</div>
+                        <span style="font-size: 0.75rem; color: var(--text-muted);">${new Date(l.timestamp).toLocaleDateString()}</span>
+                    </div>
+                    <div class="mobile-card-row">
+                        <span class="mobile-card-label">Exam:</span>
+                        <span class="mobile-card-value">${date}</span>
+                    </div>
+                    <div class="mobile-card-row">
+                        <span class="mobile-card-label">Creator:</span>
+                        <span class="mobile-card-value">${l.createdByName || 'System'}</span>
+                    </div>
+                `;
+                mobileContainer.appendChild(card);
+            }
         });
     },
 

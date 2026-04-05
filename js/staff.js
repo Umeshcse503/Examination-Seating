@@ -64,11 +64,16 @@ const staffScript = {
         const allocations = await DB.getAllocations();
         const myAllocations = allocations.filter(a => a.created_by == user.staff_id);
         const tbody = document.querySelector('#myAllocationsTable tbody');
+        const mobileContainer = document.getElementById('mobileCardList');
+        
         if (!tbody) return;
         tbody.innerHTML = '';
+        if (mobileContainer) mobileContainer.innerHTML = '';
 
         if (myAllocations.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 2rem;">You haven't generated any seating arrangements yet.</td></tr>`;
+            const emptyMsg = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 2rem;">You haven't generated any seating arrangements yet.</td></tr>`;
+            tbody.innerHTML = emptyMsg;
+            if(mobileContainer) mobileContainer.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 2rem;">No seating arrangements yet.</div>`;
             return;
         }
 
@@ -87,6 +92,31 @@ const staffScript = {
                 <td>${statusBadge}</td>
             `;
             tbody.appendChild(tr);
+
+            // Add to mobile card list
+            if (mobileContainer) {
+                const card = document.createElement('div');
+                card.className = 'mobile-card animate-slide-up';
+                card.innerHTML = `
+                    <div class="mobile-card-header">
+                        <div class="mobile-card-title">${a.examType}</div>
+                        ${statusBadge}
+                    </div>
+                    <div class="mobile-card-row">
+                        <span class="mobile-card-label">Date:</span>
+                        <span class="mobile-card-value">${new Date(a.created_at).toLocaleDateString()}</span>
+                    </div>
+                    <div class="mobile-card-row">
+                        <span class="mobile-card-label">Batch:</span>
+                        <span class="mobile-card-value">${a.batch}</span>
+                    </div>
+                    <div class="mobile-card-row">
+                        <span class="mobile-card-label">Rooms:</span>
+                        <span class="mobile-card-value">${a.rooms ? a.rooms.length : 0} Halls</span>
+                    </div>
+                `;
+                mobileContainer.appendChild(card);
+            }
         });
     },
 

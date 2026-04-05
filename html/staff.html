@@ -186,6 +186,7 @@
 
     </aside>
 
+    <main class="main-content">
         <header class="header">
             <button id="mobileMenuBtn" class="mobile-menu-btn">☰</button>
             <div style="flex: 1;">
@@ -205,7 +206,7 @@
         <section id="myAllocationsSection" class="animate-fade-in" style="display: none;">
             <div class="card float-hover">
                 <h2 class="card-title">My Pending & Processed Allocations</h2>
-                <div style="overflow-x: auto;">
+                <div style="overflow-x: auto;" class="desktop-table-container">
                     <table id="myAllocationsTable">
                         <thead>
                             <tr>
@@ -221,6 +222,11 @@
                             <!-- Populated by JS -->
                         </tbody>
                     </table>
+                </div>
+
+                <!-- Mobile Card View -->
+                <div id="mobileCardList" class="mobile-card-list">
+                    <!-- Populated by JS -->
                 </div>
             </div>
         </section>
@@ -418,6 +424,26 @@
 
     </main>
 
+    <!-- Mobile UI Elements -->
+    <button class="fab" onclick="staffScript.switchTab('schedule')" id="mobileFab">
+        <i class="fas fa-plus"></i>
+    </button>
+
+    <nav class="bottom-nav">
+        <a href="#" class="bottom-nav-link active" id="btnBottomSchedule">
+            <i class="fas fa-calendar-plus"></i>
+            <span>Schedule</span>
+        </a>
+        <a href="#" class="bottom-nav-link" id="btnBottomHistory">
+            <i class="fas fa-history"></i>
+            <span>History</span>
+        </a>
+        <a href="#" class="bottom-nav-link" onclick="Auth.logout()">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Logout</span>
+        </a>
+    </nav>
+
     <script src="/js/db.js"></script>
     <script src="/js/auth.js"></script>
     <script src="/js/export.js"></script>
@@ -449,6 +475,29 @@
                 });
             });
         }
+
+        // Bottom Nav Sync Logic
+        function syncBottomNav(tab) {
+            document.querySelectorAll('.bottom-nav-link').forEach(l => l.classList.remove('active'));
+            if(tab === 'schedule') document.getElementById('btnBottomSchedule').classList.add('active');
+            if(tab === 'myAllocations') document.getElementById('btnBottomHistory').classList.add('active');
+            
+            // Hide/Show FAB based on tab
+            const fab = document.getElementById('mobileFab');
+            if(fab) fab.style.display = tab === 'myAllocations' ? 'flex' : 'none';
+        }
+
+        document.getElementById('btnBottomSchedule').onclick = (e) => {
+            e.preventDefault();
+            staffScript.switchTab('schedule');
+            syncBottomNav('schedule');
+        };
+
+        document.getElementById('btnBottomHistory').onclick = (e) => {
+            e.preventDefault();
+            staffScript.switchTab('myAllocations');
+            syncBottomNav('myAllocations');
+        };
     </script>
 </body>
 

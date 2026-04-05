@@ -139,7 +139,10 @@ const hodScript = {
         const dept = user ? user.department : '';
         this.state.allocations = await DB.getAllocations(dept);
         const tbody = document.querySelector('#allocationsTable tbody');
+        const mobileContainer = document.getElementById('mobileAllocationCards');
+        
         tbody.innerHTML = '';
+        if(mobileContainer) mobileContainer.innerHTML = '';
 
         this.state.allocations.sort((a,b) => new Date(b.created_at) - new Date(a.created_at)).forEach(a => {
             const tr = document.createElement('tr');
@@ -158,6 +161,28 @@ const hodScript = {
                 </td>
             `;
             tbody.appendChild(tr);
+
+            // Mobile Card
+            if (mobileContainer) {
+                const card = document.createElement('div');
+                card.className = 'mobile-card';
+                card.innerHTML = `
+                    <div class="mobile-card-header">
+                        <div class="mobile-card-title">${a.examType}</div>
+                        ${statusBadge}
+                    </div>
+                    <div class="mobile-card-row">
+                        <span class="mobile-card-label">Date:</span>
+                        <span class="mobile-card-value">${a.examDate}</span>
+                    </div>
+                    <div class="mobile-card-row">
+                        <span class="mobile-card-label">Batch:</span>
+                        <span class="mobile-card-value">${a.batch}</span>
+                    </div>
+                    <button class="btn btn-secondary w-100 mt-3" onclick="hodScript.openDetailsModal('${a.allocation_id}')">Review Details</button>
+                `;
+                mobileContainer.appendChild(card);
+            }
         });
     },
 
@@ -166,7 +191,10 @@ const hodScript = {
         const dept = user ? user.department : '';
         const students = await DB.searchStudents('', dept);
         const tbody = document.querySelector('#studentsTable tbody');
+        const mobileContainer = document.getElementById('mobileStudentCards');
+        
         tbody.innerHTML = '';
+        if(mobileContainer) mobileContainer.innerHTML = '';
         
         students.forEach(s => {
             const tr = document.createElement('tr');
@@ -181,6 +209,27 @@ const hodScript = {
                 </td>
             `;
             tbody.appendChild(tr);
+
+            // Mobile Card
+            if (mobileContainer) {
+                const card = document.createElement('div');
+                card.className = 'mobile-card';
+                card.innerHTML = `
+                    <div class="mobile-card-header">
+                        <div class="mobile-card-title">${s.name}</div>
+                        <span style="font-size: 0.8rem; color: var(--primary); font-weight: 600;">${s.roll_no}</span>
+                    </div>
+                    <div class="mobile-card-row">
+                        <span class="mobile-card-label">Branch:</span>
+                        <span class="mobile-card-value">${s.branch}</span>
+                    </div>
+                    <div class="mobile-card-row">
+                        <span class="mobile-card-label">Year/Sec:</span>
+                        <span class="mobile-card-value">${s.year} - ${s.section}</span>
+                    </div>
+                `;
+                mobileContainer.appendChild(card);
+            }
         });
     },
 
@@ -195,7 +244,10 @@ const hodScript = {
             const staff = await response.json();
             
             const tbody = document.querySelector('#staffTable tbody');
+            const mobileContainer = document.getElementById('mobileStaffCards');
+            
             tbody.innerHTML = '';
+            if(mobileContainer) mobileContainer.innerHTML = '';
             
             staff.forEach(s => {
                 const tr = document.createElement('tr');
@@ -210,6 +262,27 @@ const hodScript = {
                     <td>${new Date(s.created_at).toLocaleDateString()}</td>
                 `;
                 tbody.appendChild(tr);
+
+                // Mobile Card
+                if (mobileContainer) {
+                    const card = document.createElement('div');
+                    card.className = 'mobile-card';
+                    card.innerHTML = `
+                        <div class="mobile-card-header">
+                            <div class="mobile-card-title">${s.name}</div>
+                            ${statusBadge}
+                        </div>
+                        <div class="mobile-card-row">
+                            <span class="mobile-card-label">Email:</span>
+                            <span class="mobile-card-value">${s.email}</span>
+                        </div>
+                        <div class="mobile-card-row">
+                            <span class="mobile-card-label">Joined:</span>
+                            <span class="mobile-card-value">${new Date(s.created_at).toLocaleDateString()}</span>
+                        </div>
+                    `;
+                    mobileContainer.appendChild(card);
+                }
             });
         } catch (error) {
             console.error('Error rendering staff:', error);

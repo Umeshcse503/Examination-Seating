@@ -161,24 +161,29 @@
             <section id="historySection" class="animate-fade-in" style="display: none;">
                 <div class="card">
                     <h2 class="card-title">All Seating Allocations</h2>
-                    <div style="overflow-x: auto;">
-                        <table id="allocationsTable">
-                            <thead>
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Schedule</th>
-                                    <th>Title</th>
-                                    <th>Batches</th>
-                                    <th>Staff</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-                    </div>
+                <div style="overflow-x: auto;" class="desktop-table-container">
+                    <table id="allocationsTable">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Schedule</th>
+                                <th>Title</th>
+                                <th>Batches</th>
+                                <th>Staff</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
                 </div>
-            </section>
+
+                <!-- Mobile Card View -->
+                <div id="mobileAllocationCards" class="mobile-card-list">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </section>
 
             <!-- Student Management Section -->
             <section id="studentsSection" class="animate-fade-in" style="display: none;">
@@ -190,7 +195,7 @@
                             <button class="btn btn-primary" onclick="hodScript.exportStudents()">Export List</button>
                         </div>
                     </div>
-                    <div style="overflow-x: auto;">
+                    <div style="overflow-x: auto;" class="desktop-table-container">
                         <table id="studentsTable">
                             <thead>
                                 <tr>
@@ -205,6 +210,11 @@
                             <tbody></tbody>
                         </table>
                     </div>
+
+                    <!-- Mobile Card View -->
+                    <div id="mobileStudentCards" class="mobile-card-list">
+                        <!-- Populated by JS -->
+                    </div>
                 </div>
             </section>
 
@@ -217,7 +227,7 @@
                             <button class="btn btn-primary" onclick="hodScript.switchTab('Monitor')">Back to Overview</button>
                         </div>
                     </div>
-                    <div style="overflow-x: auto;">
+                    <div style="overflow-x: auto;" class="desktop-table-container">
                         <table id="staffTable">
                             <thead>
                                 <tr>
@@ -230,6 +240,11 @@
                             </thead>
                             <tbody></tbody>
                         </table>
+                    </div>
+
+                    <!-- Mobile Card View -->
+                    <div id="mobileStaffCards" class="mobile-card-list">
+                        <!-- Populated by JS -->
                     </div>
                 </div>
             </section>
@@ -247,6 +262,30 @@
 
     <!-- Hidden file input for import -->
     <input type="file" id="studentImportFile" style="display: none;" accept=".xlsx, .xls">
+
+    <!-- Mobile UI Elements -->
+    <button class="fab" onclick="hodScript.switchTab('Students')" id="mobileFab">
+        <i class="fas fa-user-graduate"></i>
+    </button>
+
+    <nav class="bottom-nav">
+        <a href="#" class="bottom-nav-link active" id="btnBottomOverview">
+            <i class="fas fa-chart-line"></i>
+            <span>Overview</span>
+        </a>
+        <a href="#" class="bottom-nav-link" id="btnBottomHistory">
+            <i class="fas fa-history"></i>
+            <span>History</span>
+        </a>
+        <a href="#" class="bottom-nav-link" id="btnBottomStudents">
+            <i class="fas fa-users"></i>
+            <span>Students</span>
+        </a>
+        <a href="#" class="bottom-nav-link" onclick="Auth.logout()">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Logout</span>
+        </a>
+    </nav>
 
     <script src="/js/db.js"></script>
     <script src="/js/auth.js"></script>
@@ -279,6 +318,38 @@
                 });
             });
         }
+
+        // Bottom Nav Sync Logic
+        function syncBottomNav(tab) {
+            document.querySelectorAll('.bottom-nav-link').forEach(l => l.classList.remove('active'));
+            if(tab === 'Monitor') document.getElementById('btnBottomOverview').classList.add('active');
+            if(tab === 'History') document.getElementById('btnBottomHistory').classList.add('active');
+            if(tab === 'Students') document.getElementById('btnBottomStudents').classList.add('active');
+            
+            // Show/Hide FAB based on tab
+            const fab = document.getElementById('mobileFab');
+            if(fab) fab.style.display = (tab === 'History' || tab === 'Students') ? 'flex' : 'none';
+        }
+
+        document.getElementById('btnBottomOverview').onclick = (e) => {
+            e.preventDefault();
+            hodScript.switchTab('Monitor');
+            syncBottomNav('Monitor');
+        };
+
+        document.getElementById('btnBottomHistory').onclick = (e) => {
+            e.preventDefault();
+            hodScript.switchTab('History');
+            syncBottomNav('History');
+        };
+
+        document.getElementById('btnBottomStudents').onclick = (e) => {
+            e.preventDefault();
+            hodScript.switchTab('Students');
+            syncBottomNav('Students');
+        };
+    </script>
+</body>
     </script>
 </body>
 </html>
