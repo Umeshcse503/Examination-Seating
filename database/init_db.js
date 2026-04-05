@@ -8,6 +8,7 @@ async function initDB() {
         user: process.env.DB_USER || 'root',
         password: process.env.DB_PASSWORD || '',
         port: process.env.DB_PORT || 3306,
+        ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : null,
     };
 
     const dbName = process.env.DB_NAME || 'jntu_exam_management';
