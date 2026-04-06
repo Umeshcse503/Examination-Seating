@@ -24,6 +24,7 @@ CREATE TABLE IF NOT EXISTS students (
     year VARCHAR(50),
     section VARCHAR(10),
     email VARCHAR(255),
+    phone_number VARCHAR(20),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -111,7 +112,8 @@ CREATE TABLE IF NOT EXISTS feedback (
     roll_number VARCHAR(50) NOT NULL,
     email VARCHAR(255) NOT NULL,
     message TEXT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (roll_number) REFERENCES students(roll_no) ON DELETE CASCADE
 );
 
 -- Seed Default Admin

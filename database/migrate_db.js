@@ -74,6 +74,46 @@ async function migrate() {
         console.log('Updating staff emails...');
         await db.query("UPDATE staff SET email = CONCAT(username, '@gmail.com') WHERE email LIKE '%@jntu.edu' OR email = ''");
 
+        // 7. Add phone_number column to students table if missing
+        console.log('Checking for students table phone_number column...');
+        const [studentColumns] = await db.query("SHOW COLUMNS FROM students");
+        const studentColumnNames = studentColumns.map(c => c.Field);
+        if (!studentColumnNames.includes('phone_number')) {
+            console.log('Adding column: phone_number to students table');
+            await db.query("ALTER TABLE students ADD COLUMN phone_number VARCHAR(20) AFTER email");
+        }
+
+        // 8. Add Foreign Key for Feedback Table if missing
+        console.log('Checking for feedback table foreign key...');
+        const [constraints] = await db.query(`
+            SELECT CONSTRAINT_NAME 
+            FROM information_schema.KEY_COLUMN_USAGE 
+            WHERE TABLE_NAME = 'feedback' 
+            AND COLUMN_NAME = 'roll_number' 
+            AND REFERENCED_TABLE_NAME = 'students'
+        `);
+
+        if (constraints.length === 0) {
+            console.log('Adding foreign key constraint to feedback table...');
+            try {
+                // Ensure no orphaned feedback records exist before adding FK
+                // We'll just delete feedback from roll numbers not in students
+                await db.query(`
+                    DELETE FROM feedback 
+                    WHERE roll_number NOT IN (SELECT roll_no FROM students)
+                `);
+                
+                await db.query(`
+                    ALTER TABLE feedback 
+                    ADD CONSTRAINT fk_feedback_students 
+                    FOREIGN KEY (roll_number) REFERENCES students(roll_no) ON DELETE CASCADE
+                `);
+                console.log('Successfully added foreign key constraint.');
+            } catch (err) {
+                console.warn('Could not add foreign key constraint. Ensure data integrity:', err.message);
+            }
+        }
+
         console.log('Migration completed successfully!');
     } catch (err) {
         console.error('Migration failed:', err.message);
