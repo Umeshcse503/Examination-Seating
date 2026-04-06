@@ -5,99 +5,182 @@
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
 
-        <!-- ================= ENTITIES ================= -->
-
-        <!-- STAFF -->
+        <!-- ENTITIES -->
         <mxCell id="staff" value="STAFF" style="shape=rectangle;fillColor=#dae8fc;" vertex="1" parent="1">
           <mxGeometry x="100" y="100" width="140" height="60" as="geometry"/>
         </mxCell>
 
-        <!-- STUDENTS -->
         <mxCell id="students" value="STUDENTS" style="shape=rectangle;fillColor=#d5e8d4;" vertex="1" parent="1">
-          <mxGeometry x="100" y="450" width="140" height="60" as="geometry"/>
+          <mxGeometry x="100" y="500" width="140" height="60" as="geometry"/>
         </mxCell>
 
-        <!-- ROOMS -->
         <mxCell id="rooms" value="ROOMS" style="shape=rectangle;fillColor=#fff2cc;" vertex="1" parent="1">
-          <mxGeometry x="500" y="100" width="140" height="60" as="geometry"/>
+          <mxGeometry x="550" y="100" width="140" height="60" as="geometry"/>
         </mxCell>
 
-        <!-- EXAM_LOGS -->
         <mxCell id="exam_logs" value="EXAM_LOGS" style="shape=rectangle;fillColor=#f8cecc;" vertex="1" parent="1">
-          <mxGeometry x="900" y="100" width="160" height="60" as="geometry"/>
+          <mxGeometry x="1000" y="100" width="160" height="60" as="geometry"/>
         </mxCell>
 
-        <!-- ALLOCATIONS -->
         <mxCell id="allocations" value="ALLOCATIONS" style="shape=rectangle;fillColor=#e1d5e7;" vertex="1" parent="1">
-          <mxGeometry x="900" y="450" width="160" height="60" as="geometry"/>
+          <mxGeometry x="1000" y="500" width="160" height="60" as="geometry"/>
         </mxCell>
 
-        <!-- FEEDBACK -->
         <mxCell id="feedback" value="FEEDBACK" style="shape=rectangle;fillColor=#ffe6cc;" vertex="1" parent="1">
-          <mxGeometry x="500" y="450" width="140" height="60" as="geometry"/>
+          <mxGeometry x="550" y="500" width="140" height="60" as="geometry"/>
         </mxCell>
-
-        <!-- ================= ATTRIBUTES ================= -->
 
         <!-- STAFF ATTRIBUTES -->
-        <mxCell id="s1" value="staff_id (PK)" style="ellipse;" vertex="1" parent="1"><mxGeometry x="20" y="40" width="120" height="40" as="geometry"/></mxCell>
-        <mxCell id="s2" value="username" style="ellipse;" vertex="1" parent="1"><mxGeometry x="20" y="180" width="120" height="40" as="geometry"/></mxCell>
-        <mxCell id="s3" value="name" style="ellipse;" vertex="1" parent="1"><mxGeometry x="100" y="20" width="120" height="40" as="geometry"/></mxCell>
-        <mxCell id="s4" value="email" style="ellipse;" vertex="1" parent="1"><mxGeometry x="200" y="40" width="120" height="40" as="geometry"/></mxCell>
-        <mxCell id="s5" value="password" style="ellipse;" vertex="1" parent="1"><mxGeometry x="200" y="180" width="120" height="40" as="geometry"/></mxCell>
-        <mxCell id="s6" value="department" style="ellipse;" vertex="1" parent="1"><mxGeometry x="100" y="220" width="120" height="40" as="geometry"/></mxCell>
-        <mxCell id="s7" value="role" style="ellipse;" vertex="1" parent="1"><mxGeometry x="260" y="100" width="120" height="40" as="geometry"/></mxCell>
-        <mxCell id="s8" value="status" style="ellipse;" vertex="1" parent="1"><mxGeometry x="260" y="140" width="120" height="40" as="geometry"/></mxCell>
+        <mxCell id="s1" value="staff_id (PK)" style="ellipse;" vertex="1" parent="1">
+          <mxGeometry x="20" y="60" width="120" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="s2" value="username" style="ellipse;" vertex="1" parent="1">
+          <mxGeometry x="20" y="140" width="120" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="s3" value="name" style="ellipse;" vertex="1" parent="1">
+          <mxGeometry x="100" y="20" width="120" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="s4" value="email" style="ellipse;" vertex="1" parent="1">
+          <mxGeometry x="220" y="60" width="120" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="s5" value="password" style="ellipse;" vertex="1" parent="1">
+          <mxGeometry x="220" y="140" width="120" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="s6" value="department" style="ellipse;" vertex="1" parent="1">
+          <mxGeometry x="100" y="200" width="120" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="s7" value="role" style="ellipse;" vertex="1" parent="1">
+          <mxGeometry x="260" y="100" width="120" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="s8" value="status" style="ellipse;" vertex="1" parent="1">
+          <mxGeometry x="260" y="160" width="120" height="40" as="geometry"/>
+        </mxCell>
 
         <!-- STUDENT ATTRIBUTES -->
-        <mxCell id="st1" value="student_id (PK)" style="ellipse;" vertex="1" parent="1"><mxGeometry x="20" y="400" width="120" height="40"/></mxCell>
-        <mxCell id="st2" value="roll_no" style="ellipse;" vertex="1" parent="1"><mxGeometry x="200" y="400" width="120" height="40"/></mxCell>
-        <mxCell id="st3" value="name" style="ellipse;" vertex="1" parent="1"><mxGeometry x="100" y="520" width="120" height="40"/></mxCell>
-        <mxCell id="st4" value="branch" style="ellipse;" vertex="1" parent="1"><mxGeometry x="20" y="520" width="120" height="40"/></mxCell>
-        <mxCell id="st5" value="year" style="ellipse;" vertex="1" parent="1"><mxGeometry x="200" y="520" width="120" height="40"/></mxCell>
+        <mxCell id="st1" value="student_id (PK)" style="ellipse;" vertex="1" parent="1">
+          <mxGeometry x="20" y="460" width="120" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="st2" value="roll_no" style="ellipse;" vertex="1" parent="1">
+          <mxGeometry x="200" y="460" width="120" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="st3" value="name" style="ellipse;" vertex="1" parent="1">
+          <mxGeometry x="100" y="580" width="120" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="st4" value="branch" style="ellipse;" vertex="1" parent="1">
+          <mxGeometry x="20" y="580" width="120" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="st5" value="year" style="ellipse;" vertex="1" parent="1">
+          <mxGeometry x="200" y="580" width="120" height="40" as="geometry"/>
+        </mxCell>
 
         <!-- ROOMS ATTRIBUTES -->
-        <mxCell id="r1" value="room_id (PK)" style="ellipse;" vertex="1" parent="1"><mxGeometry x="420" y="40" width="120" height="40"/></mxCell>
-        <mxCell id="r2" value="room_name" style="ellipse;" vertex="1" parent="1"><mxGeometry x="420" y="180" width="120" height="40"/></mxCell>
-        <mxCell id="r3" value="capacity" style="ellipse;" vertex="1" parent="1"><mxGeometry x="600" y="40" width="120" height="40"/></mxCell>
+        <mxCell id="r1" value="room_id (PK)" style="ellipse;" vertex="1" parent="1">
+          <mxGeometry x="480" y="40" width="120" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="r2" value="room_name" style="ellipse;" vertex="1" parent="1">
+          <mxGeometry x="480" y="180" width="120" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="r3" value="capacity" style="ellipse;" vertex="1" parent="1">
+          <mxGeometry x="640" y="40" width="120" height="40" as="geometry"/>
+        </mxCell>
 
         <!-- EXAM LOG ATTRIBUTES -->
-        <mxCell id="e1" value="log_id (PK)" style="ellipse;" vertex="1" parent="1"><mxGeometry x="860" y="40" width="120" height="40"/></mxCell>
-        <mxCell id="e2" value="exam_date" style="ellipse;" vertex="1" parent="1"><mxGeometry x="860" y="180" width="120" height="40"/></mxCell>
-        <mxCell id="e3" value="exam_time" style="ellipse;" vertex="1" parent="1"><mxGeometry x="1000" y="40" width="120" height="40"/></mxCell>
+        <mxCell id="e1" value="log_id (PK)" style="ellipse;" vertex="1" parent="1">
+          <mxGeometry x="960" y="40" width="120" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="e2" value="exam_date" style="ellipse;" vertex="1" parent="1">
+          <mxGeometry x="960" y="180" width="120" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="e3" value="exam_time" style="ellipse;" vertex="1" parent="1">
+          <mxGeometry x="1100" y="40" width="120" height="40" as="geometry"/>
+        </mxCell>
 
         <!-- ALLOCATIONS ATTRIBUTES -->
-        <mxCell id="a1" value="allocation_id (PK)" style="ellipse;" vertex="1" parent="1"><mxGeometry x="860" y="400" width="140" height="40"/></mxCell>
-        <mxCell id="a2" value="exam_date" style="ellipse;" vertex="1" parent="1"><mxGeometry x="860" y="540" width="120" height="40"/></mxCell>
+        <mxCell id="a1" value="allocation_id (PK)" style="ellipse;" vertex="1" parent="1">
+          <mxGeometry x="960" y="460" width="140" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="a2" value="exam_date" style="ellipse;" vertex="1" parent="1">
+          <mxGeometry x="960" y="580" width="120" height="40" as="geometry"/>
+        </mxCell>
 
         <!-- FEEDBACK ATTRIBUTES -->
-        <mxCell id="f1" value="feedback_id (PK)" style="ellipse;" vertex="1" parent="1"><mxGeometry x="420" y="400" width="120" height="40"/></mxCell>
-        <mxCell id="f2" value="roll_number" style="ellipse;" vertex="1" parent="1"><mxGeometry x="600" y="400" width="120" height="40"/></mxCell>
+        <mxCell id="f1" value="feedback_id (PK)" style="ellipse;" vertex="1" parent="1">
+          <mxGeometry x="480" y="460" width="120" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="f2" value="message" style="ellipse;" vertex="1" parent="1">
+          <mxGeometry x="640" y="460" width="120" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="f3" value="rating" style="ellipse;" vertex="1" parent="1">
+          <mxGeometry x="640" y="580" width="120" height="40" as="geometry"/>
+        </mxCell>
 
-        <!-- ================= RELATIONSHIPS ================= -->
-
+        <!-- RELATIONSHIPS -->
         <mxCell id="rel1" value="performed_by" style="rhombus;fillColor=#fff2cc;" vertex="1" parent="1">
-          <mxGeometry x="750" y="100" width="120" height="60"/>
+          <mxGeometry x="800" y="100" width="120" height="60" as="geometry"/>
         </mxCell>
 
         <mxCell id="rel2" value="created_by" style="rhombus;fillColor=#fff2cc;" vertex="1" parent="1">
-          <mxGeometry x="750" y="450" width="120" height="60"/>
+          <mxGeometry x="800" y="500" width="120" height="60" as="geometry"/>
         </mxCell>
 
         <mxCell id="rel3" value="gives_feedback" style="rhombus;fillColor=#fff2cc;" vertex="1" parent="1">
-          <mxGeometry x="350" y="450" width="120" height="60"/>
+          <mxGeometry x="350" y="500" width="120" height="60" as="geometry"/>
         </mxCell>
 
-        <!-- ================= CONNECTIONS ================= -->
+        <mxCell id="rel4" value="assigned_room" style="rhombus;fillColor=#fff2cc;" vertex="1" parent="1">
+          <mxGeometry x="1200" y="300" width="140" height="60" as="geometry"/>
+        </mxCell>
 
-        <mxCell edge="1" source="staff" target="rel1" parent="1"><mxGeometry relative="1"/></mxCell>
-        <mxCell edge="1" source="rel1" target="exam_logs" parent="1"><mxGeometry relative="1"/></mxCell>
+        <!-- CONNECTIONS ENTITY-RELATIONSHIP -->
+        <mxCell edge="1" source="staff" target="rel1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell edge="1" source="rel1" target="exam_logs" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
 
-        <mxCell edge="1" source="staff" target="rel2" parent="1"><mxGeometry relative="1"/></mxCell>
-        <mxCell edge="1" source="rel2" target="allocations" parent="1"><mxGeometry relative="1"/></mxCell>
+        <mxCell edge="1" source="staff" target="rel2" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell edge="1" source="rel2" target="allocations" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
 
-        <mxCell edge="1" source="students" target="rel3" parent="1"><mxGeometry relative="1"/></mxCell>
-        <mxCell edge="1" source="rel3" target="feedback" parent="1"><mxGeometry relative="1"/></mxCell>
+        <mxCell edge="1" source="students" target="rel3" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell edge="1" source="rel3" target="feedback" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell edge="1" source="rooms" target="rel4" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell edge="1" source="rel4" target="allocations" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- CONNECTIONS ENTITY-ATTRIBUTES -->
+
+        <!-- STAFF to Attributes -->
+        <mxCell edge="1" source="staff" target="s1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell edge="1" source="staff" target="s2" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell edge="1" source="staff" target="s3" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell edge="1" source="staff" target="s4" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell edge="1" source="staff" target="s5" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell edge="1" source="staff" target="s6" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell edge="1" source="staff" target="s7" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell edge="1" source="staff" target="s8" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- STUDENTS to Attributes -->
+        <mxCell edge="1" source="students" target="st1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell edge="1" source="students" target="st2" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell edge="1" source="students" target="st3" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell edge="1" source="students" target="st4" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell edge="1" source="students" target="st5" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- ROOMS to Attributes -->
+        <mxCell edge="1" source="rooms" target="r1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell edge="1" source="rooms" target="r2" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell edge="1" source="rooms" target="r3" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- EXAM_LOGS to Attributes -->
+        <mxCell edge="1" source="exam_logs" target="e1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell edge="1" source="exam_logs" target="e2" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell edge="1" source="exam_logs" target="e3" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- ALLOCATIONS to Attributes -->
+        <mxCell edge="1" source="allocations" target="a1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell edge="1" source="allocations" target="a2" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <!-- FEEDBACK to Attributes -->
+        <mxCell edge="1" source="feedback" target="f1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell edge="1" source="feedback" target="f2" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell edge="1" source="feedback" target="f3" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
 
       </root>
     </mxGraphModel>
