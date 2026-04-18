@@ -43,6 +43,20 @@ const hodScript = {
             statStudents.parentElement.style.cursor = 'pointer';
             statStudents.parentElement.addEventListener('click', () => this.switchTab('Students'));
         }
+
+        // Total Exams Created Click
+        const statExams = document.getElementById('statExams');
+        if (statExams && statExams.parentElement) {
+            statExams.parentElement.style.cursor = 'pointer';
+            statExams.parentElement.addEventListener('click', () => this.switchTab('History'));
+        }
+
+        // Pending Approvals Click
+        const statPending = document.getElementById('statPending');
+        if (statPending && statPending.parentElement) {
+            statPending.parentElement.style.cursor = 'pointer';
+            statPending.parentElement.addEventListener('click', () => this.switchTab('History'));
+        }
     },
 
     switchTab(tab) {
@@ -134,30 +148,47 @@ const hodScript = {
         });
     },
 
-    async renderHistory() {
+    async renderHistory(limit = 10) {
         const user = Auth.getCurrentUser();
         const dept = user ? user.department : '';
-        this.state.allocations = await DB.getAllocations(dept);
+        this.state.allocations = await DB.getAllocations(dept, '', limit);
         const tbody = document.querySelector('#allocationsTable tbody');
         const mobileContainer = document.getElementById('mobileAllocationCards');
+        const viewAllBtn = document.getElementById('viewAllAllocationsBtn');
         
         tbody.innerHTML = '';
         if(mobileContainer) mobileContainer.innerHTML = '';
 
-        this.state.allocations.sort((a,b) => new Date(b.created_at) - new Date(a.created_at)).forEach(a => {
+        if (this.state.allocations.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 2rem;">No allocations found.</td></tr>`;
+            return;
+        }
+
+        this.state.allocations.forEach(a => {
             const tr = document.createElement('tr');
             let statusBadge = `<span style="padding: 0.25rem 0.5rem; border-radius: 99px; font-size: 0.75rem; font-weight: 600; background: rgba(0,0,0,0.05);">${a.status}</span>`;
             if (a.status === 'approved') statusBadge = `<span style="padding: 0.25rem 0.5rem; border-radius: 99px; font-size: 0.75rem; font-weight: 600; background: rgba(16,185,129,0.1); color: var(--success);">Approved</span>`;
             
+            // Format nice timestamp for the created date
+            const createdDate = new Date(a.created_at).toLocaleString('en-US', { 
+                month: 'short', 
+                day: 'numeric', 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
+
+            const reviewBtnLabel = a.status === 'approved' ? '🔍 View Result' : 'Review & Add Remarks';
+            const reviewBtnClass = a.status === 'approved' ? 'btn btn-primary' : 'btn btn-secondary';
+
             tr.innerHTML = `
-                <td>${new Date(a.created_at).toLocaleDateString()}</td>
+                <td>${createdDate}</td>
                 <td style="font-weight:600;">${a.examDate} @ ${a.examTime}</td>
                 <td>${a.examType}</td>
                 <td>${a.batch}</td>
                 <td>${a.staffName || 'N/A'}</td>
                 <td>${statusBadge}</td>
                 <td>
-                    <button class="btn btn-secondary" style="padding: 4px 12px; font-size: 12px;" onclick="hodScript.openDetailsModal('${a.allocation_id}')">Review & Add Remarks</button>
+                    <button class="${reviewBtnClass}" style="padding: 4px 12px; font-size: 12px;" onclick="hodScript.openDetailsModal('${a.allocation_id}')">${reviewBtnLabel}</button>
                 </td>
             `;
             tbody.appendChild(tr);
@@ -172,18 +203,28 @@ const hodScript = {
                         ${statusBadge}
                     </div>
                     <div class="mobile-card-row">
-                        <span class="mobile-card-label">Date:</span>
-                        <span class="mobile-card-value">${a.examDate}</span>
+                        <span class="mobile-card-label">Schedule:</span>
+                        <span class="mobile-card-value">${a.examDate} @ ${a.examTime}</span>
                     </div>
                     <div class="mobile-card-row">
                         <span class="mobile-card-label">Batch:</span>
                         <span class="mobile-card-value">${a.batch}</span>
                     </div>
-                    <button class="btn btn-secondary w-100 mt-3" onclick="hodScript.openDetailsModal('${a.allocation_id}')">Review Details</button>
+                    <button class="${reviewBtnClass} w-100 mt-3" onclick="hodScript.openDetailsModal('${a.allocation_id}')">${reviewBtnLabel}</button>
                 `;
                 mobileContainer.appendChild(card);
             }
         });
+
+        if (viewAllBtn) {
+            viewAllBtn.innerText = limit ? 'View All' : 'Show Latest 10';
+        }
+    },
+
+    async toggleAllAllocations() {
+        const viewAllBtn = document.getElementById('viewAllAllocationsBtn');
+        const isShowingLimited = viewAllBtn.innerText === 'View All';
+        await this.renderHistory(isShowingLimited ? null : 10);
     },
 
     async renderStudents() {

@@ -1,18 +1,27 @@
 const db = require('../config/database');
 
 const Allocation = {
-  async getAll(dept = '') {
+  async getAll(dept = '', staff_id = '', limit = null) {
     let sql = `
       SELECT a.*, s.name as staffName, s.department as staffDept
       FROM allocations a 
       LEFT JOIN staff s ON a.created_by = s.staff_id
+      WHERE 1=1
     `;
     let params = [];
     if (dept) {
-      sql += " WHERE s.department = ?";
+      sql += " AND s.department = ?";
       params.push(dept);
     }
+    if (staff_id) {
+      sql += " AND a.created_by = ?";
+      params.push(staff_id);
+    }
     sql += " ORDER BY a.created_at DESC";
+    if (limit) {
+      sql += " LIMIT ?";
+      params.push(parseInt(limit, 10));
+    }
     const [rows] = await db.execute(sql, params);
     return rows;
   },

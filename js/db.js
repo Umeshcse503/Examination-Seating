@@ -24,9 +24,10 @@ const DB = {
     }
   },
 
-  async getLogs() {
+  async getLogs(limit = null) {
     try {
-      const response = await fetch(`${API_URL}/logs`);
+      const url = limit ? `${API_URL}/logs?limit=${limit}` : `${API_URL}/logs`;
+      const response = await fetch(url);
       return await response.json();
     } catch (error) {
       console.error('Error fetching logs:', error);
@@ -44,10 +45,15 @@ const DB = {
     }
   },
 
-  async getAllocations(dept = '') {
+  async getAllocations(dept = '', staffId = '', limit = null) {
     try {
-      const url = dept ? `${API_URL}/allocations?dept=${encodeURIComponent(dept)}` : `${API_URL}/allocations`;
-      const response = await fetch(url);
+      const params = new URLSearchParams();
+      if (dept) params.append('dept', dept);
+      if (staffId) params.append('staff_id', staffId);
+      if (limit) params.append('limit', limit);
+      
+      const queryStr = params.toString() ? `?${params.toString()}` : '';
+      const response = await fetch(`${API_URL}/allocations${queryStr}`);
       const data = await response.json();
       // Map allocation_id to id and parse rooms_json for frontend compatibility
       return data.map(a => ({

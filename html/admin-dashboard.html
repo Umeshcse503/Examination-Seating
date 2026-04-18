@@ -76,14 +76,18 @@
         <!-- Logs Section -->
         <section id="logsSection" class="animate-fade-in" style="display: none;">
             <div class="card">
-                <h2 class="card-title">Exam Approval Logs</h2>
+                <div class="flex justify-between items-center mb-4 pb-4" style="border-bottom: 1px solid var(--border);">
+                    <h2 class="card-title" style="border: none; margin: 0; padding: 0;">Exam Approval Logs</h2>
+                    <button id="viewAllLogsBtn" class="btn btn-secondary" onclick="adminScript.toggleAllLogs()">View All</button>
+                </div>
                 <div style="overflow-x: auto;" class="desktop-table-container">
                     <table id="logsTable">
                         <thead>
                             <tr>
-                                <th>Timestamp</th>
+                                <th>Timestamp Approved</th>
                                 <th>Action</th>
-                                <th>Exam Details</th>
+                                <th>Exam Date</th>
+                                <th>Details</th>
                                 <th>Created By</th>
                                 <th>Approved By</th>
                             </tr>
@@ -195,6 +199,22 @@
     </div>
 
     </main>
+
+    <!-- Modal for Detailed Seating View -->
+    <div id="detailsModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); align-items: center; justify-content: center; z-index: 60; padding: 2rem;">
+        <div class="card animate-float-up" style="width: 100%; max-width: 900px; max-height: 90vh; overflow-y: auto; padding: 2.5rem; position: relative;">
+            <button onclick="document.getElementById('detailsModal').style.display='none'" style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-muted);">&times;</button>
+            <h2 class="card-title" style="margin-bottom: 1.5rem;">Seating Allocation Result</h2>
+            
+            <div id="detailsModalContent">
+                <!-- Populated by JS -->
+            </div>
+            
+            <div class="flex justify-end" style="margin-top: 2rem;">
+                <button class="btn btn-secondary" onclick="document.getElementById('detailsModal').style.display='none'">Close View</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Mobile UI Elements -->
     <button class="fab" onclick="adminScript.showAddUserModal()" id="mobileFab">

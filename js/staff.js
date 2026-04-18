@@ -59,26 +59,26 @@ const staffScript = {
         }
     },
 
-    async renderMyAllocations() {
+    async renderMyAllocations(limit = 10) {
         const user = Auth.getCurrentUser();
-        const allocations = await DB.getAllocations();
+        const allocations = await DB.getAllocations('', user.staff_id, limit);
         this.state.allocations = allocations; // Store globally for ExportUtils reference
-        const myAllocations = allocations.filter(a => a.created_by == user.staff_id);
         const tbody = document.querySelector('#myAllocationsTable tbody');
         const mobileContainer = document.getElementById('mobileCardList');
+        const viewAllBtn = document.getElementById('viewAllAllocationsBtn');
         
         if (!tbody) return;
         tbody.innerHTML = '';
         if (mobileContainer) mobileContainer.innerHTML = '';
 
-        if (myAllocations.length === 0) {
+        if (allocations.length === 0) {
             const emptyMsg = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 2rem;">No allocations submitted yet. Float on over to 'Schedule Exam' to start!</td></tr>`;
             tbody.innerHTML = emptyMsg;
             if(mobileContainer) mobileContainer.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 2rem;">No seating arrangements yet.</div>`;
             return;
         }
 
-        myAllocations.sort((a,b) => new Date(b.created_at) - new Date(a.created_at)).forEach(a => {
+        allocations.forEach(a => {
             const tr = document.createElement('tr');
             let statusBadge = `<span style="padding: 0.25rem 0.5rem; border-radius: 99px; font-size: 0.75rem; font-weight: 600; background: rgba(0,0,0,0.05);">${a.status}</span>`;
             if (statusBadge && a.status === 'approved') statusBadge = `<span style="padding: 0.25rem 0.5rem; border-radius: 99px; font-size: 0.75rem; font-weight: 600; background: rgba(16,185,129,0.1); color: var(--success);">Approved</span>`;
@@ -137,6 +137,16 @@ const staffScript = {
                 mobileContainer.appendChild(card);
             }
         });
+
+        if (viewAllBtn) {
+            viewAllBtn.innerText = limit ? 'View All' : 'Show Latest 10';
+        }
+    },
+
+    async toggleAllAllocations() {
+        const viewAllBtn = document.getElementById('viewAllAllocationsBtn');
+        const isShowingLimited = viewAllBtn.innerText === 'View All';
+        await this.renderMyAllocations(isShowingLimited ? null : 10);
     },
 
     switchTab(tab) {

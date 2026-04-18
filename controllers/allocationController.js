@@ -3,9 +3,9 @@ const db = require('../config/database');
 
 const allocationController = {
   async getAll(req, res) {
-    const { dept = '' } = req.query;
+    const { dept = '', staff_id = '', limit } = req.query;
     try {
-      const rows = await Allocation.getAll(dept);
+      const rows = await Allocation.getAll(dept, staff_id, limit);
       res.json(rows);
     } catch (err) {
       res.status(500).json({ error: err.message });

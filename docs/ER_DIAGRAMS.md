@@ -12,7 +12,7 @@ erDiagram
     STAFF ||--o{ EXAM_LOGS : "performs"
     STAFF ||--o{ EXAM_LOGS : "creates_record"
     STAFF ||--o{ EXAM_LOGS : "approves"
-    STUDENTS ||--o{ FEEDBACK : "submits"
+    STAFF ||--o{ FEEDBACK : "submits"
     
     STAFF {
         int staff_id PK
@@ -77,8 +77,8 @@ erDiagram
 
     FEEDBACK {
         int feedback_id PK
-        string student_name
-        string roll_number
+        string staff_name
+        string staff_username
         string email
         text message
         timestamp created_at

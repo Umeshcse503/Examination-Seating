@@ -58,13 +58,20 @@ router.get('/hod/stats', allocationController.getHODStats);
 // Logs
 router.get('/logs', async (req, res) => {
     try {
-        const [rows] = await db.execute(`
+        const { limit } = req.query;
+        let sql = `
             SELECT l.*, s1.name as createdByName, s1.department as dept, s2.name as approvedByName 
             FROM exam_logs l
             LEFT JOIN staff s1 ON l.created_by = s1.staff_id
             LEFT JOIN staff s2 ON l.approved_by = s2.staff_id
             ORDER BY l.timestamp DESC
-        `);
+        `;
+        let params = [];
+        if (limit) {
+            sql += " LIMIT ?";
+            params.push(parseInt(limit, 10));
+        }
+        const [rows] = await db.execute(sql, params);
         res.json(rows);
     } catch (err) { res.status(500).json({ error: err.message }); }
 });
@@ -78,7 +85,7 @@ router.post('/logs', async (req, res) => {
 // Feedback
 router.post('/feedback', async (req, res) => {
   try {
-    const [result] = await db.execute("INSERT INTO feedback (student_name, roll_number, email, message) VALUES (?, ?, ?, ?)", [req.body.student_name, req.body.roll_number, req.body.email, req.body.message]);
+    const [result] = await db.execute("INSERT INTO feedback (staff_name, staff_username, email, message) VALUES (?, ?, ?, ?)", [req.body.staff_name, req.body.staff_username, req.body.email, req.body.message]);
     res.json({ success: true, feedback_id: result.insertId });
   } catch (err) { res.status(400).json({ error: err.message }); }
 });

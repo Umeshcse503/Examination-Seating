@@ -138,7 +138,7 @@
         <mxCell edge="1" source="staff" target="rel2" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
         <mxCell edge="1" source="rel2" target="allocations" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
 
-        <mxCell edge="1" source="students" target="rel3" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell edge="1" source="staff" target="rel3" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
         <mxCell edge="1" source="rel3" target="feedback" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
 
         <mxCell edge="1" source="rooms" target="rel4" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>

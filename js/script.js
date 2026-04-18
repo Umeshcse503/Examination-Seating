@@ -43,8 +43,8 @@ document.addEventListener('DOMContentLoaded', () => {
             submitBtn.disabled = true;
 
             const feedbackData = {
-                student_name: feedbackForm.querySelector('input[placeholder="Enter your name"]').value,
-                roll_number: feedbackForm.querySelector('input[placeholder="e.g. 25XW5A0503"]').value,
+                staff_name: feedbackForm.querySelector('input[placeholder="Enter your name"]').value,
+                staff_username: feedbackForm.querySelector('input[placeholder="e.g. admin"]').value,
                 email: feedbackForm.querySelector('input[placeholder="name@jntu.edu"]').value,
                 message: feedbackForm.querySelector('textarea').value
             };

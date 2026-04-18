@@ -108,12 +108,12 @@ CREATE TABLE IF NOT EXISTS allocations (
 -- Feedback Table
 CREATE TABLE IF NOT EXISTS feedback (
     feedback_id INT AUTO_INCREMENT PRIMARY KEY,
-    student_name VARCHAR(255) NOT NULL,
-    roll_number VARCHAR(50) NOT NULL,
+    staff_name VARCHAR(255) NOT NULL,
+    staff_username VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
     message TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (roll_number) REFERENCES students(roll_no) ON DELETE CASCADE
+    FOREIGN KEY (staff_username) REFERENCES staff(username) ON DELETE CASCADE
 );
 
 -- Seed Default Admin

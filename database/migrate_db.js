@@ -83,35 +83,43 @@ async function migrate() {
             await db.query("ALTER TABLE students ADD COLUMN phone_number VARCHAR(20) AFTER email");
         }
 
-        // 8. Add Foreign Key for Feedback Table if missing
-        console.log('Checking for feedback table foreign key...');
-        const [constraints] = await db.query(`
-            SELECT CONSTRAINT_NAME 
-            FROM information_schema.KEY_COLUMN_USAGE 
-            WHERE TABLE_NAME = 'feedback' 
-            AND COLUMN_NAME = 'roll_number' 
-            AND REFERENCED_TABLE_NAME = 'students'
-        `);
+        // 8. Migrate Feedback Table to use staff_username instead of roll_number
+        console.log('Migrating feedback table for staff...');
+        const [feedbackColumns] = await db.query("SHOW COLUMNS FROM feedback");
+        const feedbackColumnNames = feedbackColumns.map(c => c.Field);
 
-        if (constraints.length === 0) {
-            console.log('Adding foreign key constraint to feedback table...');
+        if (feedbackColumnNames.includes('roll_number')) {
+            console.log('Renaming feedback columns...');
+            
+            // Drop existing foreign keys on roll_number
             try {
-                // Ensure no orphaned feedback records exist before adding FK
-                // We'll just delete feedback from roll numbers not in students
-                await db.query(`
-                    DELETE FROM feedback 
-                    WHERE roll_number NOT IN (SELECT roll_no FROM students)
+                const [fks] = await db.query(`
+                    SELECT CONSTRAINT_NAME 
+                    FROM information_schema.KEY_COLUMN_USAGE 
+                    WHERE TABLE_NAME = 'feedback' 
+                    AND COLUMN_NAME = 'roll_number' 
+                    AND CONSTRAINT_NAME != 'PRIMARY' AND REFERENCED_TABLE_NAME IS NOT NULL
                 `);
-                
-                await db.query(`
-                    ALTER TABLE feedback 
-                    ADD CONSTRAINT fk_feedback_students 
-                    FOREIGN KEY (roll_number) REFERENCES students(roll_no) ON DELETE CASCADE
-                `);
-                console.log('Successfully added foreign key constraint.');
+                for (let fk of fks) {
+                    await db.query(`ALTER TABLE feedback DROP FOREIGN KEY ${fk.CONSTRAINT_NAME}`);
+                }
             } catch (err) {
-                console.warn('Could not add foreign key constraint. Ensure data integrity:', err.message);
+                console.warn('Warning when checking foreign keys:', err.message);
             }
+            
+            // Delete old student feedback data to avoid violating the new staff foreign key
+            await db.query("DELETE FROM feedback");
+            
+            await db.query("ALTER TABLE feedback CHANGE student_name staff_name VARCHAR(255) NOT NULL");
+            await db.query("ALTER TABLE feedback CHANGE roll_number staff_username VARCHAR(255) NOT NULL");
+            
+            console.log('Adding foreign key constraint for staff_username...');
+            await db.query(`
+                ALTER TABLE feedback 
+                ADD CONSTRAINT fk_feedback_staff 
+                FOREIGN KEY (staff_username) REFERENCES staff(username) ON DELETE CASCADE
+            `);
+            console.log('Successfully migrated feedback table.');
         }
 
         console.log('Migration completed successfully!');
