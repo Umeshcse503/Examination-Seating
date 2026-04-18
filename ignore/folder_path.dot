@@ -5,6 +5,8 @@ edge [arrowhead=none];
 splines=false;
 ranksep=0.8;
 nodesep=0.4;
+"projectpro" -> ".env"
+"projectpro" -> ".gitignore"
 "projectpro" -> ".vscode"
 ".vscode" -> "settings.json"
 "projectpro" -> "README.md"
@@ -24,11 +26,16 @@ nodesep=0.4;
 "database" -> "add_more_rooms.js"
 "database" -> "init_db.js"
 "database" -> "migrate_db.js"
+"database" -> "migrate_to_cloud.js"
 "database" -> "mysql_setup.sql"
 "database" -> "seed_allocations.js"
 "database" -> "seed_faculty.js"
 "database" -> "sync_rooms.js"
 "projectpro" -> "database.sqlite"
+"projectpro" -> "docs"
+"docs" -> "ER_DIAGRAMS.md"
+"docs" -> "er1.drawio.pdf"
+"docs" -> "er_diagram.xml"
 "projectpro" -> "html"
 "html" -> "admin-dashboard.html"
 "html" -> "hod.html"
@@ -39,6 +46,7 @@ nodesep=0.4;
 "projectpro" -> "images"
 "images" -> "gopi.jpeg"
 "images" -> "logo.jpg"
+"images" -> "output.png"
 "images" -> "saikrishna.jpeg"
 "images" -> "umesh.jpeg"
 "images" -> "yaseen.jpeg"
