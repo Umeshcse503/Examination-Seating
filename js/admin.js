@@ -171,8 +171,6 @@ const adminScript = {
                 mobileContainer.appendChild(card);
             }
         });
-
-        });
     },
 
 

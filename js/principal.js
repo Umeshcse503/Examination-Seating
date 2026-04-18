@@ -113,8 +113,6 @@ const principalScript = {
                 mobileContainer.appendChild(card);
             }
         });
-
-        });
     },
 
 
@@ -178,8 +176,6 @@ const principalScript = {
                 `;
                 mobileContainer.appendChild(card);
             }
-        });
-
         });
     },
 
@@ -300,8 +296,6 @@ const principalScript = {
                 `;
                 mobileContainer.appendChild(card);
             }
-        });
-
         });
     },
 

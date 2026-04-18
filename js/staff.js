@@ -137,8 +137,6 @@ const staffScript = {
                 mobileContainer.appendChild(card);
             }
         });
-
-        });
     },
 
 

@@ -215,8 +215,6 @@ const hodScript = {
                 mobileContainer.appendChild(card);
             }
         });
-
-        });
     },
 
 
