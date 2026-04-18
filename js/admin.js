@@ -108,7 +108,7 @@ const adminScript = {
         }
     },
 
-    async renderLogs(limit = 10) {
+    async renderLogs(limit = null) {
         const allocations = await DB.getAllocations('', '', limit);
         const tbody = document.querySelector('#logsTable tbody');
         const mobileContainer = document.getElementById('mobileLogCards');
@@ -172,16 +172,10 @@ const adminScript = {
             }
         });
 
-        if (viewAllBtn) {
-            viewAllBtn.innerText = limit ? 'View All' : 'Show Latest 10';
-        }
+        });
     },
 
-    async toggleAllLogs() {
-        const viewAllBtn = document.getElementById('viewAllLogsBtn');
-        const isShowingLimited = viewAllBtn.innerText === 'View All';
-        await this.renderLogs(isShowingLimited ? null : 10);
-    },
+
 
     async openDetailsModal(id) {
         // Fetch specific allocation

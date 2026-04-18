@@ -148,7 +148,7 @@ const hodScript = {
         });
     },
 
-    async renderHistory(limit = 10) {
+    async renderHistory(limit = null) {
         const user = Auth.getCurrentUser();
         const dept = user ? user.department : '';
         this.state.allocations = await DB.getAllocations(dept, '', limit);
@@ -216,16 +216,10 @@ const hodScript = {
             }
         });
 
-        if (viewAllBtn) {
-            viewAllBtn.innerText = limit ? 'View All' : 'Show Latest 10';
-        }
+        });
     },
 
-    async toggleAllAllocations() {
-        const viewAllBtn = document.getElementById('viewAllAllocationsBtn');
-        const isShowingLimited = viewAllBtn.innerText === 'View All';
-        await this.renderHistory(isShowingLimited ? null : 10);
-    },
+
 
     async renderStudents() {
         const user = Auth.getCurrentUser();

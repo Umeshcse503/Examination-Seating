@@ -47,7 +47,7 @@ const principalScript = {
         return `<span style="background: rgba(100,116,139,0.1); color: var(--text-muted); padding: 0.25rem 0.75rem; border-radius: 999px; font-weight: 600; font-size: 0.75rem;">Pending</span>`;
     },
 
-    async renderRequests(limit = 10) {
+    async renderRequests(limit = null) {
         this.state.allocations = await DB.getAllocations('', '', limit);
         const allocations = this.state.allocations.filter(a => a.status === 'pending');
         const tbody = document.querySelector('#requestsTable tbody');
@@ -114,18 +114,12 @@ const principalScript = {
             }
         });
 
-        if (viewAllBtn) {
-            viewAllBtn.innerText = limit ? 'View All' : 'Show Latest 10';
-        }
+        });
     },
 
-    async toggleAllRequests() {
-        const viewAllBtn = document.getElementById('viewAllRequestsBtn');
-        const isShowingLimited = viewAllBtn.innerText === 'View All';
-        await this.renderRequests(isShowingLimited ? null : 10);
-    },
 
-    async renderHistory(limit = 10) {
+
+    async renderHistory(limit = null) {
         this.state.historyAllocations = await DB.getAllocations('', '', limit);
         const allocations = this.state.historyAllocations.filter(a => a.status !== 'pending');
         const tbody = document.querySelector('#historyTable tbody');
@@ -186,16 +180,10 @@ const principalScript = {
             }
         });
 
-        if (viewAllBtn) {
-            viewAllBtn.innerText = limit ? 'View All' : 'Show Latest 10';
-        }
+        });
     },
 
-    async toggleAllHistory() {
-        const viewAllBtn = document.getElementById('viewAllHistoryBtn');
-        const isShowingLimited = viewAllBtn.innerText === 'View All';
-        await this.renderHistory(isShowingLimited ? null : 10);
-    },
+
 
     async renderAccounts() {
         const users = (await DB.getUsers()).filter(u => u.status === 'pending');
@@ -259,7 +247,7 @@ const principalScript = {
         }
     },
 
-    async renderLogs(limit = 10) {
+    async renderLogs(limit = null) {
         const allocations = await DB.getAllocations('', '', limit);
         const tbody = document.querySelector('#logsTable tbody');
         const mobileContainer = document.getElementById('mobileLogCards');
@@ -314,16 +302,10 @@ const principalScript = {
             }
         });
 
-        if (viewAllBtn) {
-            viewAllBtn.innerText = limit ? 'View All' : 'Show Latest 10';
-        }
+        });
     },
 
-    async toggleAllLogs() {
-        const viewAllBtn = document.getElementById('viewAllLogsBtn');
-        const isShowingLimited = viewAllBtn.innerText === 'View All';
-        await this.renderLogs(isShowingLimited ? null : 10);
-    },
+
 
     async rejectAccount(id) {
         if (confirm(`Reject this account request? This will delete the user request.`)) {

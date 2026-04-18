@@ -1,14 +1,20 @@
+require('dotenv').config();
 const mysql = require('mysql2/promise');
 
 async function migrate() {
     let db;
     try {
-        db = await mysql.createConnection({
-            host: '127.0.0.1',
-            user: 'root',
-            password: '',
-            database: 'jntu_exam_management'
-        });
+        const config = {
+            host: process.env.DB_HOST || '127.0.0.1',
+            user: process.env.DB_USER || 'root',
+            password: process.env.DB_PASSWORD || '',
+            database: process.env.DB_NAME || 'jntu_exam_management',
+            port: process.env.DB_PORT || 3306,
+            ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : null
+        };
+
+        console.log(`Connecting to database at ${config.host}...`);
+        db = await mysql.createConnection(config);
 
         console.log('Connected to MySQL database.');
 

@@ -45,7 +45,6 @@
             <div class="card">
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="card-title" style="margin-bottom:0; border-bottom:none; padding-bottom:0;">Pending Seating Allocations</h2>
-                    <button id="viewAllRequestsBtn" class="btn btn-secondary" onclick="principalScript.toggleAllRequests()">View All</button>
                 </div>
                 <div style="overflow-x: auto;" class="desktop-table-container">
                     <table id="requestsTable">
@@ -78,7 +77,6 @@
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="card-title" style="margin-bottom:0; border-bottom:none; padding-bottom:0;">Approved / Rejected Allocations History</h2>
                     <div class="flex gap-2">
-                        <button id="viewAllHistoryBtn" class="btn btn-secondary" onclick="principalScript.toggleAllHistory()">View All</button>
                         <button class="btn btn-secondary" style="color: #EF4444; border-color: #EF4444;" onclick="principalScript.clearHistory()">Clear History</button>
                     </div>
                 </div>
@@ -142,7 +140,6 @@
             <div class="card">
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="card-title" style="margin-bottom:0; border-bottom:none; padding-bottom:0;">Exam Approval Logs</h2>
-                    <button id="viewAllLogsBtn" class="btn btn-secondary" onclick="principalScript.toggleAllLogs()">View All</button>
                 </div>
                 <div style="overflow-x: auto;" class="desktop-table-container">
                     <table id="logsTable">

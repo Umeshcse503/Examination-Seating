@@ -59,7 +59,7 @@ const staffScript = {
         }
     },
 
-    async renderMyAllocations(limit = 10) {
+    async renderMyAllocations(limit = null) {
         const user = Auth.getCurrentUser();
         const allocations = await DB.getAllocations('', user.staff_id, limit);
         this.state.allocations = allocations; // Store globally for ExportUtils reference
@@ -138,16 +138,10 @@ const staffScript = {
             }
         });
 
-        if (viewAllBtn) {
-            viewAllBtn.innerText = limit ? 'View All' : 'Show Latest 10';
-        }
+        });
     },
 
-    async toggleAllAllocations() {
-        const viewAllBtn = document.getElementById('viewAllAllocationsBtn');
-        const isShowingLimited = viewAllBtn.innerText === 'View All';
-        await this.renderMyAllocations(isShowingLimited ? null : 10);
-    },
+
 
     switchTab(tab) {
         document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
