@@ -3,9 +3,10 @@ const db = require('../config/database');
 const Allocation = {
   async getAll(dept = '', staff_id = '', limit = null) {
     let sql = `
-      SELECT a.*, s.name as staffName, s.department as staffDept
+      SELECT a.*, s.name as staffName, s.department as staffDept, s2.name as approvedByName
       FROM allocations a 
       LEFT JOIN staff s ON a.created_by = s.staff_id
+      LEFT JOIN staff s2 ON a.approved_by = s2.staff_id
       WHERE 1=1
     `;
     let params = [];
@@ -35,10 +36,10 @@ const Allocation = {
     return result.insertId;
   },
 
-  async updateStatus(id, status, remarks) {
+  async updateStatus(id, status, remarks, approved_by = null) {
     const [result] = await db.execute(
-      "UPDATE allocations SET status = ?, remarks = ? WHERE allocation_id = ?",
-      [status, remarks, id]
+      "UPDATE allocations SET status = ?, remarks = ?, approved_by = ? WHERE allocation_id = ?",
+      [status, remarks, approved_by, id]
     );
     return result.affectedRows > 0;
   },

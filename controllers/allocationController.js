@@ -31,9 +31,9 @@ const allocationController = {
   },
 
   async updateStatus(req, res) {
-    const { status, remarks } = req.body;
+    const { status, remarks, principalId } = req.body;
     try {
-      const success = await Allocation.updateStatus(req.params.id, status, remarks);
+      const success = await Allocation.updateStatus(req.params.id, status, remarks, principalId);
       res.json({ success });
     } catch (err) {
       res.status(400).json({ error: err.message });

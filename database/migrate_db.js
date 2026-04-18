@@ -122,6 +122,24 @@ async function migrate() {
             console.log('Successfully migrated feedback table.');
         }
 
+        // 9. Seating Allocations: Add approved_by column
+        console.log('Checking for allocations table approved_by column...');
+        const [allocColumns] = await db.query("SHOW COLUMNS FROM allocations");
+        const allocColumnNames = allocColumns.map(c => c.Field);
+        if (!allocColumnNames.includes('approved_by')) {
+            console.log('Adding column: approved_by to allocations table');
+            await db.query("ALTER TABLE allocations ADD COLUMN approved_by INT AFTER created_by");
+            await db.query(`
+                ALTER TABLE allocations 
+                ADD CONSTRAINT fk_approved_by 
+                FOREIGN KEY (approved_by) REFERENCES staff(staff_id) ON DELETE SET NULL
+            `);
+        }
+
+        // 10. Drop exam_logs table
+        console.log('Dropping exam_logs table...');
+        await db.query("DROP TABLE IF EXISTS exam_logs");
+
         console.log('Migration completed successfully!');
     } catch (err) {
         console.error('Migration failed:', err.message);

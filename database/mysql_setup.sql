@@ -71,22 +71,7 @@ INSERT IGNORE INTO rooms (room_name, building, total_rows, total_columns, capaci
 ('Exam Hall 2', 'Main Block', 15, 10, 150),
 ('Exam Hall 3', 'Main Block', 15, 10, 150);
 
--- Exam Log Table
-CREATE TABLE IF NOT EXISTS exam_logs (
-    log_id INT AUTO_INCREMENT PRIMARY KEY,
-    action TEXT NOT NULL,
-    performed_by INT,
-    exam_date DATE,
-    exam_time TIME,
-    exam_type VARCHAR(100),
-    batch TEXT,
-    created_by INT,
-    approved_by INT,
-    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (performed_by) REFERENCES staff(staff_id) ON DELETE SET NULL,
-    FOREIGN KEY (created_by) REFERENCES staff(staff_id) ON DELETE SET NULL,
-    FOREIGN KEY (approved_by) REFERENCES staff(staff_id) ON DELETE SET NULL
-);
+
 
 -- Seating Allocations Table
 CREATE TABLE IF NOT EXISTS allocations (
@@ -99,10 +84,12 @@ CREATE TABLE IF NOT EXISTS allocations (
     faculties_json JSON,
     hod_remark TEXT,
     created_by INT,
+    approved_by INT,
     status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
     remarks TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (created_by) REFERENCES staff(staff_id) ON DELETE SET NULL
+    FOREIGN KEY (created_by) REFERENCES staff(staff_id) ON DELETE SET NULL,
+    FOREIGN KEY (approved_by) REFERENCES staff(staff_id) ON DELETE SET NULL
 );
 
 -- Feedback Table

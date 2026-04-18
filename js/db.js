@@ -24,16 +24,7 @@ const DB = {
     }
   },
 
-  async getLogs(limit = null) {
-    try {
-      const url = limit ? `${API_URL}/logs?limit=${limit}` : `${API_URL}/logs`;
-      const response = await fetch(url);
-      return await response.json();
-    } catch (error) {
-      console.error('Error fetching logs:', error);
-      return [];
-    }
-  },
+
 
   async getAllHalls() {
     try {
@@ -242,17 +233,7 @@ const DB = {
     }
   },
 
-  async logAction(action, performedBy) {
-    try {
-      await fetch(`${API_URL}/logs`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action, performed_by: performedBy })
-      });
-    } catch (error) {
-      console.error('Log error:', error);
-    }
-  },
+
 
   async getHODStats(dept = '') {
     try {

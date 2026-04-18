@@ -109,7 +109,7 @@ const adminScript = {
     },
 
     async renderLogs(limit = 10) {
-        const logs = await DB.getLogs(limit);
+        const allocations = await DB.getAllocations('', '', limit);
         const tbody = document.querySelector('#logsTable tbody');
         const mobileContainer = document.getElementById('mobileLogCards');
         const viewAllBtn = document.getElementById('viewAllLogsBtn');
@@ -117,37 +117,36 @@ const adminScript = {
         tbody.innerHTML = '';
         if(mobileContainer) mobileContainer.innerHTML = '';
 
-        if (logs.length === 0) {
-            const emptyMsg = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 2rem;">No logs recorded yet.</td></tr>`;
+        if (allocations.length === 0) {
+            const emptyMsg = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 2rem;">No allocation history found.</td></tr>`;
             tbody.innerHTML = emptyMsg;
-            if(mobileContainer) mobileContainer.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 2rem;">No logs yet.</div>`;
             return;
         }
 
-        logs.forEach(l => {
+        allocations.forEach(a => {
             const tr = document.createElement('tr');
-            const date = l.exam_date ? new Date(l.exam_date).toLocaleDateString() : '-';
-            const time = l.exam_time || '-';
-            const details = l.batch ? `Batch: ${l.batch} (${l.exam_type})` : (l.exam_type || '-');
+            const date = a.examDate ? new Date(a.examDate).toLocaleDateString() : '-';
+            const details = a.batch ? `Batch: ${a.batch} (${a.examType})` : (a.examType || '-');
             
-            // Add "View Result" button if allocation_id exists
-            let viewBtnHtml = '';
-            if (l.allocation_id) {
-                viewBtnHtml = `<button class="btn btn-secondary" style="padding: 0.2rem 0.6rem; font-size: 0.7rem; margin-top: 0.25rem;" onclick="adminScript.openDetailsModal('${l.allocation_id}')">🔍 View Result</button>`;
-            }
+            // Allocation ID is available for result viewing
+            let viewBtnHtml = `<button class="btn btn-secondary" style="padding: 0.2rem 0.6rem; font-size: 0.7rem; margin-top: 0.25rem;" onclick="adminScript.openDetailsModal('${a.allocation_id}')">🔍 View Result</button>`;
+
+            let statusBadge = `<span style="padding: 0.25rem 0.5rem; border-radius: 99px; font-size: 0.75rem; font-weight: 600; background: rgba(0,0,0,0.05);">${a.status}</span>`;
+            if (a.status === 'approved') statusBadge = `<span style="padding: 0.25rem 0.5rem; border-radius: 99px; font-size: 0.75rem; font-weight: 600; background: rgba(16,185,129,0.1); color: var(--success);">Approved</span>`;
+            else if (a.status === 'rejected') statusBadge = `<span style="padding: 0.25rem 0.5rem; border-radius: 99px; font-size: 0.75rem; font-weight: 600; background: rgba(239,68,68,0.1); color: var(--danger);">Rejected</span>`;
 
             tr.innerHTML = `
-                <td>${new Date(l.timestamp).toLocaleString()}</td>
+                <td>${new Date(a.created_at).toLocaleString()}</td>
                 <td>
                     <div style="display: flex; flex-direction: column; align-items: flex-start;">
-                        <span style="color: var(--success); font-weight: 600;">${l.action}</span>
+                        ${statusBadge}
                         ${viewBtnHtml}
                     </div>
                 </td>
                 <td>${date}</td>
                 <td>${details}</td>
-                <td>${l.createdByName || 'ID: ' + l.created_by}</td>
-                <td>${l.approvedByName || 'ID: ' + l.approved_by}</td>
+                <td>${a.staffName || 'ID: ' + a.created_by}</td>
+                <td>${a.approvedByName || (a.status !== 'pending' ? 'Principal' : '-')}</td>
             `;
             tbody.appendChild(tr);
 
@@ -157,8 +156,8 @@ const adminScript = {
                 card.className = 'mobile-card animate-slide-up';
                 card.innerHTML = `
                     <div class="mobile-card-header">
-                        <div class="mobile-card-title">${l.action}</div>
-                        <span style="font-size: 0.75rem; color: var(--text-muted);">${new Date(l.timestamp).toLocaleDateString()}</span>
+                        <div class="mobile-card-title">${a.examType}</div>
+                        ${statusBadge}
                     </div>
                     <div class="mobile-card-row">
                         <span class="mobile-card-label">Exam:</span>
@@ -166,7 +165,7 @@ const adminScript = {
                     </div>
                     <div class="mobile-card-row" style="flex-direction: column; align-items: flex-start;">
                         <span class="mobile-card-label" style="margin-bottom: 0.5rem;">Results:</span>
-                        ${viewBtnHtml || '<span style="color: var(--text-muted);">N/A</span>'}
+                        ${viewBtnHtml}
                     </div>
                 `;
                 mobileContainer.appendChild(card);
